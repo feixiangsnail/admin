@@ -1,0 +1,237 @@
+<div id="customMenuBox">
+
+    <div class="customMenu">
+        <div>
+            <button type="button" class="btn btn-success" @click="addNewMenu">
+                新增菜单
+            </button>
+            新增的菜单，选中并生成菜单之后，才会生效。
+        </div>
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox">
+                            </th>
+                            <th>菜单</th>
+                            <th>显示顺序</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="checkbox">
+                            </td>
+                            <td>
+                                <select class="form-control selectUrl">
+                                    <option value="">选择文章</option>
+                                    <option value="ceshi">测试</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-control selectUrl">
+                                    <option value="">选择文章</option>
+                                    <option value="ceshi">测试</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-success">
+                                    删除
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div v-if="showMenutDg" class="menuDg">
+        <div class="cosTop clearfix">
+            <div class="topName">
+                编辑菜单
+            </div>
+            <div class="cosClose closeBtns">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true" @click="closeNewMenu()"></span>
+            </div>
+        </div>
+
+        <div class="textList">
+            主菜单名称：
+            <input type="text" class="form-control form-controlInline">
+        </div>
+        <div class="textList">
+            显示顺序：
+            <select class="form-control form-controlInline">
+                <option value="">请选择</option>
+                <option value="0">折扣</option>
+                <option value="1">现金</option>
+            </select>
+
+        </div>
+        <div class="textList">
+            选择方式：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <label>
+                <input type="radio" v-model="selectWay" value="byUrl" @change="chooseWay">URL </label>
+            <label>
+                <input type="radio" v-model="selectWay" value="byReply" @change="chooseWay"> 图文回复 </label>
+            <label>
+                <input type="radio" v-model="selectWay" value="subMenu" @change="chooseWay"> 子菜单</label>
+        </div>
+
+        <div v-show="selectWay=='byUrl'" class="choosedWay">
+            url:
+            <select class="form-control form-controlInline">
+                <option value="">请选择</option>
+                <option value="0">折扣</option>
+                <option value="1">现金</option>
+            </select>
+
+        </div>
+
+        <div v-show="selectWay=='byReply'" class="choosedWay">
+            图文:
+            <select class="form-control form-controlInline">
+                <option value="">请选择</option>
+                <option value="0">折扣</option>
+                <option value="1">现金</option>
+            </select>
+        </div>
+        <div v-show="selectWay=='subMenu'">
+            <div class="row">
+                <div class="col-xs-12 table-responsive">
+                    <table class="table table-striped">
+
+                        <thead>
+                            <tr>
+                                <th>
+                                    菜单
+                                </th>
+                                <th>选择方式</th>
+                                <th>图文</th>
+                                <th>URL</th>
+                                <th>显示顺序</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input type="text" class="form-control">
+                                </td>
+                                <td class="col-md-3">
+                                    <label>
+                                        <input type="radio" v-model="subSelectWay" value="byUrl">URL </label>
+                                    <label>
+                                        <input type="radio" v-model="subSelectWay" value="byReply" > 图文回复 </label>
+
+                                </td>
+                                <td>
+                                    <select class="form-control selectUrl">
+                                        <option value="">选择文章</option>
+                                        <option value="ceshi">测试</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control selectUrl">
+                                        <option value="">选择文章</option>
+                                        <option value="ceshi">测试</option>
+                                    </select>
+                                </td>
+                                <td>
+                                        <input type="text" class="form-control">
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-success">
+                                        删除
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <div class="tc">
+            <button type="button" class="btn btn-success">
+                保存设置
+            </button>
+        </div>
+    </div>
+
+
+</div>
+<style>
+    #customMenuBox .menuDg {
+        width: 1000px;
+        height: 600px;
+        background: white;
+        position: absolute;
+        margin: auto;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+    }
+
+
+
+    #customMenuBox .form-controlInline {
+        display: inline-block;
+        width: 30%;
+        margin-left: 20px;
+    }
+
+    #customMenuBox .textList {
+        margin-left: 30px;
+        margin-bottom: 20px;
+    }
+
+    #customMenuBox .textList label {
+        margin-left: 20px;
+    }
+
+    .choosedWay {
+        margin-left: 30px;
+    }
+</style>
+
+<script>
+    new Vue({
+        el: '#customMenuBox',
+        data: {
+            showMenutDg: false,
+            selectWay: '',
+            subSelectWay:'',
+        },
+        methods: {
+            addNewMenu() {
+                $("#masking").show();
+                this.showMenutDg = true;
+
+            },
+            chooseWay() {
+                console.log(this.selectWay)
+
+            },
+            closeNewMenu(){
+                $("#masking").hide();
+                this.showMenutDg = false;
+            }
+        }
+    })
+
+
+
+</script>

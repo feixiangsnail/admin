@@ -1,0 +1,49 @@
+
+1.引入
+<link rel="stylesheet" href="http://userjs.iidingyun.com/data/2452//icy.iidingyun.com/admin/components/paginationVue.css">
+<script src="http://userjs.iidingyun.com/data/2452/admin/components/paginationVue.js"></script>
+
+2.在data中加入分页配置对象memberData
+		 memberData: {
+                totalPage: 1, //总页数
+                curPage: 1, //当前页码
+                showPageNum: 10, //页码栏显示页数
+                perPageNum: 2, //内容区每页显示数量             
+            },
+
+3.写点击页码的方法 showMemberData（可以写别的，但要跟@navpage那个对应）:
+		showMemberData: function(pageIndex) {
+      			 this.memberData.curPage = pageIndex;
+      			 //调用ajax方法
+                this.getListData()
+            },
+
+
+4.在ajax方法里将memberData.curPage也就是当前页传给 data对象的字段里
+
+	getListData:function(){
+	var that=this;
+	$.ajax({
+			url:...,
+			data:{
+				thisPage:this.memberData.curPage,
+				//pageCount:this.memberData.perPageNum
+			},
+			success:function(d){
+				that.memberData.totalPage=d.totalPage
+			}
+
+	})
+
+
+	}
+	
+5.加入组件  
+    <page :allpage="memberData.totalPage" :currentPage="memberData.curPage" :showitem="memberData.showPageNum" @navpage="showMemberData" ></page>
+
+
+
+
+
+
+

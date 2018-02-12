@@ -1,0 +1,274 @@
+<div id="taihaoSetBox">
+	<div class="taihaoSet">
+		<div class="row">
+			<div class="col-xs-12 table-responsive">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>编号</th>
+							<th>名称</th>
+							<th>类型</th>
+
+							<th colspan="1"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								<input type="text" class="form-control" v-model="searchItem.barcode">
+							</td>
+							<td>
+								<input type="text" class="form-control" v-model="searchItem.userid">
+							</td>
+
+							<td>
+								<select class="form-control" v-model="searchItem.buyerType">
+									<option v-for="i in 5" :value="i">{{i}}</option>
+								</select>
+							</td>
+
+							<td>
+								<button type="button" class="btn btn-success" @click="searchTaihao">
+                                    导出
+                                </button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="sortTaihao">
+			<button type="button" class="btn btn-success" @click="openTaihaoDialog">
+                	台号分类
+            </button>
+		</div>
+
+		<div class="taihaoList">
+
+			<div class="row">
+				<div class="col-xs-12 table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th class="col-md-1">全选
+									<input type="checkbox">
+								</th>
+								<th>桌号</th>
+								<th>名称</th>
+								<th>类型</th>
+								<th>最低消费</th>
+								<th>座位数</th>
+								<th>包间费</th>
+								<th>打印机</th>
+								<th>顺序</th>
+								<th>二维码</th>
+								<th>删除</th>
+
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<input type="checkbox">
+								</td>
+
+								<td>
+									<input type="text" class="form-control" v-model="searchItem.barcode">
+								</td>
+								<td>
+									<input type="text" class="form-control" v-model="searchItem.barcode">
+								</td>
+
+								<td class="col-md-1">
+									<select class="form-control" v-model="searchItem.buyerType">
+										<option v-for="i in 5" :value="i">{{i}}</option>
+									</select>
+								</td>
+								<td>
+									<input type="text" class="form-control" v-model="searchItem.barcode">
+								</td>
+								<td>
+									<input type="text" class="form-control" v-model="searchItem.barcode">
+								</td>
+								<td>
+									<input type="text" class="form-control" v-model="searchItem.barcode">
+								</td>
+
+								<td class="col-md-1">
+									<select class="form-control" v-model="searchItem.buyerType">
+										<option v-for="i in 5" :value="i">{{i}}</option>
+									</select>
+								</td>
+								<td>
+									<input type="text" class="form-control" v-model="searchItem.barcode">
+								</td>
+
+								<td class="col-md-1">二维码</td>
+								<td class="col-md-1">删除</td>
+
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="tc">
+			<button type="button" class="btn btn-success" @click="saveTaihaoList">
+                	保存设置
+            </button>
+		</div>
+	</div>
+
+	<div v-if="showTaihaoDialog" class="TaihaoDialog">
+		<div class="cosTop clearfix">
+			<div class="topName">
+				餐桌分类
+			</div>
+			<div class="cosClose closeBtns">
+				<span class="glyphicon glyphicon-remove" aria-hidden="true" @click="closeTaihaoDialog()"></span>
+			</div>
+		</div>
+
+		<div class="taihaosetBar">
+			<input type="text" class="form-control">
+			<button type="button" class="btn btn-success">
+                                   添加
+                                </button>
+			<button type="button" class="btn btn-success">
+                                   	保存顺序
+                                </button>
+
+		</div>
+		<div class="row">
+			<div class="col-xs-12 table-responsive">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>类别</th>
+							<th>状态</th>
+							<th>修改</th>
+							<th>删除</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(item,index) in TaihaoList ">
+							<td>
+								<input type="text" class="form-control">
+							</td>
+							<td>
+								<button type="button" class="btn btn-success" @click="toggleStatus(index)">
+                                   	{{item.TaihaoStatus}}
+                                </button>
+							</td>
+
+							<td>
+								<button type="button" class="btn btn-success" @click="modify(index)">
+                                   	修改
+                                </button>
+								<div class="modifyTaihao">
+
+									I am modifyTaihao
+								</div>
+							</td>
+
+							<td>
+								<button type="button" class="btn btn-success" @click="deleteTaihao(index)">
+                                   	删除
+                                </button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</div>
+
+</div>
+<style>
+	.TaihaoDialog {
+		width: 600px;
+		height: 500px;
+		background: white;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		margin: auto;
+		z-index: 9999;
+	}
+	
+	.taihaosetBar>input {
+		width: 20%;
+		float: left;
+		margin-left: 100px;
+	}
+	
+	.taihaosetBar>button {
+		margin-left: 50px;
+	}
+	
+	.modifyTaihao {
+		width: 200px;
+		height: 100px;
+		background: green;
+		z-index: 99999;
+		margin: auto;
+	}
+</style>
+
+<script>
+	new Vue({
+		el: '#taihaoSetBox',
+		data: {
+			showTaihaoDialog: false,
+			TaihaoList: [{
+					TaihaoStatus: '已公开'
+				}
+
+			],
+			searchItem: {
+				barcode: "",
+				accountStatus: "",
+				mobile: "",
+				userName: "",
+				buyerType: "",
+				createBeginDate: "",
+				createEndDate: "",
+				siteBuyerType: "",
+				updateBeginDate: "",
+				updateEndDate: "",
+				userid: "",
+				thisPage: '',
+				pageCount: 1
+			},
+		},
+		methods: {
+			searchTaihao: function() {
+				console.log('searchTaihao')
+			},
+			openTaihaoDialog: function() {
+				$('#masking').show();
+				this.showTaihaoDialog = true;
+			},
+			closeTaihaoDialog: function() {
+				$('#masking').hide();
+				this.showTaihaoDialog = false;
+			},
+			toggleStatus: function(index) {
+				if(this.TaihaoList[index].TaihaoStatus == '已公开') {
+					this.TaihaoList[index].TaihaoStatus = '已隐藏'
+				} else {
+					this.TaihaoList[index].TaihaoStatus = '已公开'
+				}
+			},
+			deleteTaihao: function(index) {
+				//				this.TaihaoList.split(index, 1);
+			},
+			saveTaihaoList:function(){
+				console.log('saveTaihaolist')
+			}
+		}
+	})
+</script>

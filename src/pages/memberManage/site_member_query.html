@@ -1,0 +1,881 @@
+<div id="memberQueryBox">
+    <div class="memberQuery">
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>卡号</th>
+                            <th>会员号</th>
+                            <th>手机号</th>
+                            <th>姓名</th>
+                            <th>注册类型</th>
+                            <th>分类</th>
+                            <th>注册时间</th>
+                            <th>最后登录</th>
+                            <th>账户状态</th>
+                            <th colspan="2"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="text" class="form-control" v-model="searchItem.barcode">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" v-model="searchItem.userid">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" v-model="searchItem.mobile">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" v-model="searchItem.userName">
+                            </td>
+                            <td class="col-md-1">
+                                <select class="form-control" v-model="searchItem.buyerType">
+
+                                    <option value="">请选择</option>
+
+                                </select>
+                            </td>
+                            <td class="col-md-1">
+                                <select class="form-control" v-model="searchItem.siteBuyerType">
+                                    <option value="">请选择</option>
+                                </select>
+                            </td>
+                            <td class="col-md-2">
+                                <div class="input-group input-daterange">
+                                    <input type="text" onclick="laydate()" class="form-control form-control2" id="memberCreateBT">
+                                    <div class="input-group-addon">to</div>
+                                    <input type="text" onclick="laydate()" class="form-control form-control2" id="memberCreateET">
+                                </div>
+                            </td>
+                            <td class="col-md-2">
+                                <div class="input-group input-daterange">
+                                    <input type="text" onclick="laydate()" class="form-control form-control2" id="memberUpdateBT">
+                                    <div class="input-group-addon">to</div>
+                                    <input type="text" onclick="laydate()" class="form-control form-control2" id="memberUpdateET">
+                                </div>
+                            </td>
+                            <td class="col-md-1">
+                                <select class="form-control form-controlSelect" v-model="searchItem.accountStatus">
+                                    <option v-for="i in 5" :value="i">{{i}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-success" @click="searchMember">
+                                    查询
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-success">
+                                    导出
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="pages">
+            <page-peak @navpage="showMemberData" :posturl=" '/api/site_buyer_select.vm' " :postdata="searchItem" ref="child1"></page-peak>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>名字</th>
+                            <th>会员号</th>
+                            <th>等级</th>
+                            <th>手机号</th>
+                            <th>注册类型</th>
+                            <th>分类</th>
+                            <th>注册时间</th>
+                            <th>登录时间</th>
+                            <th>类型</th>
+                            <th>基本信息</th>
+                            <th>详细信息</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item,index) in showItems">
+                            <td>{{item.user_name}}</td>
+                            <td>
+                                <button type="button" class="btn btn-primary" @click="openPersonalDetail(index)">
+                                    {{item.userid}}
+                                </button>
+                            </td>
+                            <td>
+                                <p>{{item.userid}}</p>
+                            </td>
+                            <td>
+                                <p>{{item.mobile}}</p>
+                            </td>
+                            <td>
+                                <p>{{item.level}}</p>
+                            </td>
+                            <td>
+                                <p>{{item.buyer_type}}</p>
+                            </td>
+                            <td>
+                                <p>{{item.site_buyer_type}}</p>
+                            </td>
+                            <td>
+                                <p>{{item.create_time}}</p>
+                            </td>
+                            <td>
+                                <p>{{item.login_times}}</p>
+                            </td>
+                            <td>
+                                <p>{{item.type}}</p>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-success" @click="openDetailDialog(index)">
+                                    查看
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div v-if="detailEditable" class="personalDialog">
+        <!-- <div class="topBlank">
+            </div> -->
+        <div class="cosTop clearfix">
+            <div class="topName">
+                信息详情
+            </div>
+            <div class="cosClose closeBtns">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true" @click="closeDetailDialog()"></span>
+            </div>
+        </div>
+        <div class="baseInfo clearfix">
+            <div class="personImg">
+                <!-- <img src="./assets/images/test.jpg" alt=""> -->
+                <img :src="memberItem.photo" alt="">
+            </div>
+            <ul class="personDetail">
+                <li>
+                    姓名：
+                    <span>{{buyerInfo.user_name}}</span>
+                </li>
+                <li>
+                    性别：
+                    <span>{{buyerInfo.sex}}</span>
+                </li>
+                <li>
+                    生日：
+                    <span>{{buyerInfo.birthday}}</span>
+                </li>
+                <li>
+                    手机号：
+                    <span>{{buyerInfo.mobile}}</span>
+                </li>
+                <li>
+                    等级：
+                    <span>{{buyerInfo.level}}</span>
+                </li>
+                <li>
+                    入会时间：
+                    <span>{{buyerInfo.create_date}}</span>
+                </li>
+
+                <li>
+                    卡号：
+                    <span>{{buyerInfo.cardno}}</span>
+                </li>
+                <li>
+                    充值金额：
+                    <span>{{buyerInfo.deposit_score}}</span>
+                </li>
+                <li>
+                    赠送金额：
+                    <span>{{buyerInfo.prize_score}}</span>
+                </li>
+                <li>
+                    积分：
+                    <span>{{buyerInfo.points}}</span>
+                </li>
+
+
+                <li>
+                    消费金额：
+                    <span>{{buyerInfo.cost_score}}</span>
+                </li>
+                <li>
+                    消费次数：
+                    <span>{{buyerInfo.cost_num}}</span>
+                </li>
+                <li>
+                    最后消费时间：
+                    <span>{{buyerInfo.last_cost_time}}</span>
+                </li>
+                <li>
+                    会员余额：
+                    <span>{{buyerInfo.balance}}</span>
+                </li>
+
+            </ul>
+        </div>
+        <div class="tabLists">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#currencyHistory" data-toggle="tab" aria-expanded="true">金币</a>
+                    </li>
+                    <li class="">
+                        <a href="#discountCard" data-toggle="tab" aria-expanded="false">优惠明细</a>
+                    </li>
+                    <li class="">
+                        <a href="#scoreDetail" data-toggle="tab" aria-expanded="false">积分详情</a>
+                    </li>
+                    <li class="">
+                        <a href="#modifyBaseInfo" data-toggle="tab" aria-expanded="false">修改基本信息</a>
+                    </li>
+                </ul>
+                <div class="tab-content ">
+                    <div class="tab-pane active" id="currencyHistory">
+                        <div class="row">
+                            <div class="col-xs-12 table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>分店</th>
+
+                                            <th>卡号</th>
+                                            <th>手机号</th>
+
+                                            <th>类型</th>
+                                            <th>支付方式</th>
+                                            <th>时间</th>
+                                            <th>查询</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="text" class="form-control" v-model="searchCurrencyItem.shopid">
+                                            </td>
+
+                                            <td>
+                                                <input type="text" class="form-control" v-model="searchCurrencyItem.barcode">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" v-model="searchCurrencyItem.mobile">
+                                            </td>
+
+                                            <td>
+                                                <select class="form-control" v-model="searchCurrencyItem.pay_direction">
+                                                    <option value="">请选择</option>
+                                                    <option value="0">消费</option>
+                                                    <option value="1">充值</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-control" v-model="searchCurrencyItem.buyer_payment_type">
+                                                    <option value="">请选择</option>
+                                                    <option value="0">网上充值</option>
+                                                    <option value="1">刷卡</option>
+                                                    <option value="2">现金支付</option>
+
+
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <div class="input-group input-daterange">
+                                                    <input type="text" onclick="laydate()" class="form-control form-control2" id="currencyBT">
+                                                    <div class="input-group-addon">to</div>
+                                                    <input type="text" onclick="laydate()" class="form-control form-control2" id="currencyET">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-success" @click="searchCurrency()">
+                                                    查询
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="pages">
+                            <page-peak @navpage="showCurrencyList" :posturl=" '/api/member/site_buyer_payment_list.vm' " :postdata="searchCurrencyItem"
+                                ref="currencyDom"></page-peak>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>编号</th>
+                                            <th>门店</th>
+                                            <th>用户</th>
+                                            <th>卡号</th>
+                                            <th>方式</th>
+                                            <th>实付</th>
+                                            <th>时间</th>
+                                            <th>单号</th>
+                                            <th>备注</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="item in currencyLists">
+                                            <td>{{item.id}}</td>
+                                            <td>{{item.shopid}}</td>
+                                            <td>{{item.userid}}</td>
+                                            <td>{{item.barcode}}</td>
+                                            <td>{{item.paymentTypeName}}</td>
+                                            <td>{{item.pay}}</td>
+                                            <td>{{item.create_time}}</td>
+                                            <td>{{item.orderid}}</td>
+                                            <td class="col-md-1">
+                                                <input type="text" class="form-control">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="discountCard">
+                        <div class="row">
+                            <div class="col-xs-12 table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>优惠券名称</th>
+                                            <th>优惠券编号</th>
+                                            <th>手机号码</th>
+                                            <th>开始日期</th>
+                                            <th>结束日期</th>
+                                            <th>类型</th>
+                                            <th>状态</th>
+                                            <th colspan="2"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="text" class="form-control" v-model="searchTicketItem.ticket_name">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" v-model="searchTicketItem.ticket_code">
+                                            </td>
+
+                                            <td>
+                                                <input type="text" class="form-control" v-model="searchTicketItem.mobile">
+                                            </td>
+                                            <td>
+                                                <input type="text" onclick="laydate()" class="form-control" id="ticektBT">
+                                            </td>
+                                            <td>
+                                                <input type="text" onclick="laydate()" class="form-control" id="ticektET">
+                                            </td>
+                                            <td>
+                                                <select class="form-control" v-model="searchTicketItem.ticket_type">
+                                                    <option value="">请选择</option>
+                                                    <option value="cash">现金券</option>
+                                                    <option value="discount">折扣券</option>
+                                                    <option value="product">产品券</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-control" v-model="searchTicketItem.ticket_status">
+                                                    <option value="">请选择</option>
+                                                    <option value="0">未使用</option>
+                                                    <option value="1">已使用</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-success" @click="searchDiscard()">
+                                                    查询
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-success" @click="exportDiscard()">
+                                                    导出优惠券
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="pages">
+                            <page-peak @navpage="showTicketList" :posturl=" '/api/ticket/site_user_ticket_list.vm' " :postdata="searchTicketItem" ref="ticketDom"></page-peak>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-xs-12 table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>券名称</th>
+                                            <th>券编号</th>
+                                            <th>折扣类型</th>
+                                            <th>优惠值</th>
+                                            <th>用户ID</th>
+                                            <th>手机号码</th>
+                                            <th>领取日期</th>
+                                            <th>使用日期</th>
+                                            <th>过期日期</th>
+                                            <th>状态</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="item in ticketLists">
+                                            <td>{{item.ticket_name}}</td>
+                                            <td>{{item.ticket_code}}</td>
+                                            <td>{{item.discount_way}}</td>
+                                            <td>{{item.discount_value}}</td>
+                                            <td>{{item.userid}}</td>
+                                            <td>{{item.mobile}}</td>
+                                            <td>{{item.create_time}}</td>
+                                            <td>{{item.usage_time}}</td>
+                                            <td>{{item.due_date}}</td>
+                                            <td>{{item.ticket_status}}</td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="scoreDetail">
+                        <div class="row">
+                            <div class="col-xs-12 table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+
+                                            <th>积分类型</th>
+                                            <th>积分来源</th>
+                                            <th>起始日期</th>
+                                            <th>结束日期</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+
+                                            <td>
+                                                <select class="form-control" v-model="searchScoreItem.points_type">
+                                                    <option value="">请选择</option>
+                                                    <option value="0">消费积分</option>
+                                                    <option value="1">获取积分</option>
+
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-control" v-model="searchScoreItem.points_from">
+                                                    <option value="">请选择</option>
+                                                    <option value="0">注册</option>
+                                                    <option value="1">消费</option>
+                                                    <option value="2">充值</option>
+
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="text" onclick="laydate()" class="form-control form-control2" id="scoreBT">
+                                            </td>
+                                            <td>
+                                                <input type="text" onclick="laydate()" class="form-control form-control2" id="scoreET">
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-success" @click="searchScore">
+                                                    查询
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="pages">
+                            <page-peak @navpage="showScoreList" :posturl=" '/api/member/site_buyer_points_select.vm' " :postdata="searchScoreItem" ref="scoreDom"></page-peak>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-xs-12 table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>编号</th>
+                                            <th>会员号</th>
+                                            <th>会员名称</th>
+                                            <th>方式</th>
+                                            <th>积分</th>
+                                            <th>时间</th>
+                                            <th>备注</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane " id="modifyBaseInfo">
+                        <div class="row">
+                            <div class="col-xs-12 table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>姓名</th>
+                                            <th>性别</th>
+                                            <th>生日</th>
+                                            <th>手机号</th>
+                                            <th>卡号</th>
+                                            <th class="col-md-3">更换头像</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="text" class="form-control" v-model="memberItem.user_name">
+                                            </td>
+                                            <td>
+                                                <select class="form-control" v-model="memberItem.sex">
+                                                    <option value="">请选择</option>
+                                                    <option value="1">男</option>
+                                                    <option value="0">女</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="text" onclick="laydate()" class="form-control" id="setBirthday">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" v-model="memberItem.mobile">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" v-model="memberItem.cardno">
+                                            </td>
+                                            <td class="col-md-3">
+                                                <div class="item-input">
+                                                    <div class="a-upload">
+                                                        <input type="file" class="file_door_img" data-id="door_img" ref="imginput" capture="camera" accept="*/*" @change="chooseImg()">
+                                                        <input type="hidden" name="door_img" class="door_img" value="">
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="saveBaseInfo">
+                            <button type="button" class="btn btn-success" @click="saveBaseInfo()">
+                                保存
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    #memberQueryBox .memberQuery p {
+        line-height: 35px;
+        font-size: 16px;
+    }
+
+    .personalDialog {
+        width: 1200px;
+        height: 800px;
+        position: absolute;
+        margin: auto;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: white;
+    }
+
+    .baseInfo {
+        padding: 10px;
+    }
+
+    .personImg {
+        width: 130px;
+        height: 130px;
+        float: left;
+    }
+
+    .personImg img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .personDetail {
+        width: 950px;
+        float: right;
+        height: 150px;
+    }
+
+    .personDetail>li {
+        display: block;
+        margin: 5px;
+        float: left;
+        padding: 5px;
+        font-weight: 900;
+        font-size: 14px;
+    }
+
+    .personDetail>li>span {
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    .form-control2 {
+        width: 30%;
+        display: inline-block;
+    }
+
+    .tabLists {
+        background: green;
+    }
+
+    #modifyBaseInfo .row tr td {
+        padding: 50px 10px;
+        background: none;
+    }
+
+    .saveBaseInfo {
+        text-align: center;
+    }
+
+    .remainMoney {
+        font-size: 20px;
+        color: green;
+        font-weight: 900;
+    }
+</style>
+<!-- <script src="pages/memberManage/query.js"></script> -->
+
+<script>
+
+    $(function () {
+        new Vue({
+            el: '#memberQueryBox',
+            data: {
+                memberurl: '/api/site_buyer_select.vm',
+                currentIndex: 0,
+                remainCurrency: 50,
+                detailEditable: false,
+                currentId: '',
+                currencyLists: [],
+                ticketLists: [],
+                scoreLists: [],
+                showItems: [],
+                buyerInfo: {},
+                searchItem: {
+                    barcode: "",
+                    accountStatus: "",
+                    mobile: "",
+                    userName: "",
+                    buyerType: "",
+                    createBeginDate: "",
+                    createEndDate: "",
+                    siteBuyerType: "",
+                    updateBeginDate: "",
+                    updateEndDate: "",
+                    userid: "",
+                    thisPage: '',
+                    pageCount: 3
+                },
+                searchCurrencyItem: {
+                    shopid: '',
+                    barcode: '',
+                    mobile: '',
+                    pay_direction: '',
+                    buyer_payment_type: '',
+                    begin_time: '',
+                    end_time: '',
+                    thisPage: '',
+                    pageCount: 2
+                },
+                searchTicketItem: {
+                    ticket_name: '',
+                    ticket_code: '',
+                    mobile: '',
+                    ticket_type: '',
+                    ticket_status: '',
+                    thisPage: '',
+                    pageCount: 2
+                },
+                searchScoreItem: {
+
+                    userid: '',
+                    points_type: '',
+                    points_from: '',
+                    thisPage: '',
+                    pageCount: 2
+
+                },
+                memberItem: {
+                    userid: '',
+                    user_name: '',
+                    sex: '',
+                    mobile: '',
+                    cardno: '',
+                    photo: '',
+                    birthday: ''
+                },
+            },
+            methods: {
+                openDetailDialog: function (index) {
+                    this.detailEditable = true;
+                    $('#masking').show();
+                    this.currentId = this.showItems[index].userid;
+                    this.searchCurrencyItem.userid = this.currentId;
+                    this.searchTicketItem.userid = this.currentId;
+                    this.searchScoreItem.userid = this.currentId;
+                    this.getBaseInfo();
+                },
+
+                closeDetailDialog: function () {
+                    this.detailEditable = false;
+                    $('#masking').hide();
+                },
+                getBaseInfo() {
+                    var that = this;
+                    $.ajax({
+                        type: "POST",
+                        data: { userid: this.currentId },
+                        url: "/api/member/site_buyer_info.vm",
+                        dataType: "json",
+                        success: function (d) {
+                            console.log(d, 'getBaseInfo')
+                            if (d.code == 'success') {
+                                that.buyerInfo = d.data[0] || {}
+                            } else {
+                                gAlert(d.msg)
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            gAlert('操作失败，状态码:' + XMLHttpRequest.status)
+                        }
+                    });
+                },
+                saveBaseInfo: function () {
+                    this.memberItem.birthday = $("#setBirthday").val();
+                    this.memberItem.userid = this.currentId;
+                    $.ajax({
+                        type: "POST",
+                        data: this.memberItem,
+                        url: "/api/member/site_buyer_update.vm",
+                        dataType: "json",
+                        success: function (d) {
+                            if (d.code == 'success') {
+                                gAlert('保存成功')
+                            } else {
+                                gAlert(d.msg)
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            gAlert('操作失败，状态码:' + XMLHttpRequest.status)
+                        }
+                    });
+                },
+                searchMember: function () {
+
+                    // if(!gIsPhone(this.searchItem.mobile)) return;
+                    this.searchItem.createBeginDate = $("#memberCreateBT").val();
+                    this.searchItem.createEndDate = $("#memberCreateET").val();
+                    this.searchItem.updateBeginDate = $("#memberUpdateBT").val();
+                    this.searchItem.updateEndDate = $("#memberUpdateET").val();
+                    this.$refs.child1.getAjaxData();
+                },
+                showMemberData: function (d) {
+                    this.showItems = d.data;
+                },
+                searchCurrency: function () {
+                    this.searchCurrencyItem.begin_time = $("#currencyBT").val();
+                    this.searchCurrencyItem.end_time = $("#currencyET").val();
+                    this.searchCurrencyItem.thisPage = 1;
+
+                    this.$refs.currencyDom.getAjaxData();
+                },
+                showCurrencyList: function (d) {
+
+                    if (d) this.currencyLists = d.data || [];
+                },
+                searchDiscard: function () {
+                    this.searchTicketItem.begin_time = $("#ticektBT").val();
+                    this.searchTicketItem.end_time = $("#ticektET").val();
+                    this.$refs.ticketDom.getAjaxData();
+                },
+                exportDiscard: function () {
+                    console.log('exportDiscard')
+                },
+                showTicketList: function (d) {
+                    if (d) this.ticketLists = d.data || [];
+                },
+                searchScore() {
+                    this.searchScoreItem.begin_time = $("#scoreBT").val();
+                    this.searchScoreItem.end_time = $("#scoreET").val();
+
+                    this.$refs.scoreDom.getAjaxData();
+                },
+                showScoreList(d) {
+                    console.log(d, 'showscoreList')
+                    if (d) this.scoreLists = d.data || [];
+                },
+
+
+                chooseImg: function (index) {
+                    var that = this;
+                    var obj = this.$refs.imginput;
+                    // var id = $(obj).attr("data-id");
+                    //创建读取文件的对象  
+                    //为文件读取成功设置事件  
+                    for (var i = 0; i < obj.files.length; i++) {
+                        var file = obj.files[i];
+                        var reader = new FileReader();
+                        reader.name = file.name;
+                        reader.onload = function (e) {
+                            //创建文件读取相关的变量  
+                            $.ajax({
+                                url: "/uploadImg.vm",
+                                type: 'post',
+                                data: { fileData: e.target.result, fileName: e.target.name },
+                                dataType: 'JSON',
+                                timeout: 200000,
+                                error: function () {
+                                    alert("图片上传失败");
+                                },
+                                success: function (result) {
+                                    that.memberItem.photo = result.code;
+                                }
+                            });
+                        };
+                        //正式读取文件  
+                        reader.readAsDataURL(file);
+                    }
+                }
+            }
+        })
+    })
+
+</script>

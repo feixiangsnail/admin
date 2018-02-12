@@ -1,0 +1,68 @@
+
+
+1.先引入
+<link rel="stylesheet" href="http://userjs.iidingyun.com/data/2452//icy.iidingyun.com/admin/components/paginationVue.css">
+<script src="http://userjs.iidingyun.com/data/2452/admin/components/paginationVue.js"></script>
+
+
+
+2.前端必传入参数有posturl（ajax的url）,postdata（ajax的data),还有定义navpage方法（showMemberData是自己定义在methods中的方法名，用于处理返回的数据比如
+
+			showMemberData: function(d) {
+                
+                this.showItems = d.data;
+            
+            },其中d是后台返回的数据，绑定到表格要展示的数据中，我这里表格的数据是showItems
+）
+3.后台定义字段要注意的问题：定义的页码字段名为：thisPage，定义的每页展示的条数是pageCount，返回的总页码字段名为：totalPage。
+
+	success: function(d) {
+                        
+                        d.totalPage? that.allpage = d.totalPage: that.allpage=0;
+                          that.$emit('navpage',d);
+                        
+                },
+
+4.点击查询的时候要为组件定义一个ref属性（比如ref="child1"），查询的方法来触发this.$refs.child1.getAjaxData();
+
+
+
+5.可选参数：pageCount用于前端定义每条展示的数量。
+比如<page @navpage="showMemberData" ：pageCount=‘可选’ :posturl=" '/api/site_buyer_select.vm' " :postdata="searchItem" ref="child1"></page>
+
+
+
+
+
+
+    例子：
+
+
+    <div class="pages">
+    		<page @navpage="showMemberData" :posturl="memberurl" :postdata="searchItem" ref="child1"></page>
+	</div>
+
+	 data: {
+            memberurl:'/api/site_buyer_select.vm',         
+            searchItem: {
+                
+             
+            },
+
+            showItems:{}
+        },
+    methods:{
+	    showMemberData: function(d) {
+	                
+	                this.showItems = d.data;
+	            
+	            },
+
+	    //查询的方法
+	    searchMember: function() {
+
+                this.$refs.child1.getAjaxData();
+
+            
+            },
+    }

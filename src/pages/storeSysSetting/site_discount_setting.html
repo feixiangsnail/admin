@@ -1,0 +1,90 @@
+<div id="discountSettingBox">
+    <div class="discountSetting">
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>名称（例如：活动券）</th>
+                            <th>折扣（例如：8.8）</th>
+                            <th>是否为默认折扣</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in disCountLists">
+                            <td>{{item.name}}</td>
+                            <td>{{item.discount}}</td>
+                            <td>
+                                <input type="radio" v-model="item.isDefault" name="discountType">
+                            </td>
+                            <td>
+                                <input type="checkbox" v-model="item.handle">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+</div>
+<script>
+new Vue({
+    el: '#discountSettingBox',
+    data: {
+        disCountLists: [{
+                name: '员工7.5折',
+                discount: 7.5,
+                isDefault: false,
+                handle: false,
+            },
+            {
+                name: '供应商8折',
+                discount: 8,
+                isDefault: false,
+                handle: false,
+            },
+            {
+                name: '客诉9折',
+                discount: 9,
+                isDefault: false,
+                handle: false,
+            },
+            {
+                name: '商场8.8折',
+                discount: 8.8,
+                isDefault: false,
+                handle: false,
+            }
+
+
+
+
+
+        ]
+    },
+    mounted(){
+        getDiscountLists
+
+    },
+    methods: {
+        getDiscountLists(){
+            $.ajax({
+                    type: "POST",
+                    url: '/api/site_set/site_discount_list_select.vm',
+                    data: null,
+                    dataType: "json",
+                    success: function (d) {
+                       console.log(d,'dddddddddddddddddd333')
+
+
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        gAlert('请求失败，状态码:' + XMLHttpRequest.status)
+                    }
+                });
+        },
+    }
+})
+</script>

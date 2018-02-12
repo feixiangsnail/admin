@@ -1,0 +1,146 @@
+<div id="couponDetailBox">
+    <div class="row">
+        <div class="col-xs-12 table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>优惠券名称</th>
+                        <th>优惠券编号</th>
+                        <th>用户ID</th>
+                        <th>手机号码</th>
+                        <th>开始日期</th>
+                        <th>结束日期</th>
+                        <th>类型</th>
+                        <th>状态</th>
+                        <th colspan="2"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="text" class="form-control" v-model="searchItem.ticket_name">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" v-model="searchItem.ticket_code">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" v-model="searchItem.userid">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" v-model="searchItem.mobile">
+                        </td>
+                        <td>
+                            <input type="text" onclick="laydate()" class="form-control" id="cardSearchBT">
+                        </td>
+                        <td>
+                            <input type="text" onclick="laydate()" class="form-control" id="cardSearchET">
+                        </td>
+                        <td>
+                            <select class="form-control" v-model="searchItem.ticket_type">
+                                <option value="">请选择</option>
+                                    <option value="cash">现金券</option>
+                                    <option value="discount">折扣券</option>
+                                    <option value="product">产品券</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-control" v-model="searchItem.ticket_status">
+                                <option value="">请选择</option>
+                                <option value="1">已使用</option>
+                                <option value="0">未使用</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-success" @click="searchDiscard()">
+                                查询
+                            </button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-success" @click="exportDiscard()">
+                                导出优惠券
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="pages">
+            <page-peak @navpage="showCouponDetail" :posturl=" '/api/ticket/site_user_ticket_list.vm ' " :postdata="searchItem" ref="pageDom"></page-peak>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>券名称</th>
+                        <th>券编号</th>
+                        <th>折扣类型</th>
+                        <th>优惠值</th>
+                        <th>用户ID</th>
+                        <th>手机号码</th>
+                        <th>领取日期</th>
+                        <th>使用日期</th>
+                        <th>过期日期</th>
+                        <th>状态</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in cuponLists">
+                        <td>{{item.ticket_name}}</td>                       
+                        <td>{{item.ticket_code}}</td>
+                        <td>{{item.discount_way}}</td>
+                        <td>{{item.discount_value}}</td>
+                        <td>{{item.userid}}</td>
+                        <td>{{item.mobile}}</td>
+                        <td>{{item.create_time}}</td>
+                        <td>{{item.usage_time}}</td>
+                        <td>{{item.due_date}}</td>
+                        <td>{{item.ticket_status}}</td>
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+   
+</div>
+
+<script>
+    new Vue({
+        el: '#couponDetailBox',
+        data: {
+            searchItem:{
+                ticket_name:'',
+                ticket_code:'',
+                userid:'',
+                mobile:'',
+                create_time:'',
+                due_date:'',
+                ticket_type:'',
+                ticket_status:''
+            },
+            cuponLists:[],
+        },
+        mounted: function () {
+           
+        },
+        methods: {
+            searchDiscard(){
+               
+                this.searchItem.begin_time = $('#cardSearchBT').val();
+                this.searchItem.end_time = $('#cardSearchET').val();
+                this.$refs.pageDom.getAjaxData();
+            
+            },
+            showCouponDetail(d){    
+                      
+                this.cuponLists = d.data || [];
+            },   
+            exportDiscard(){
+                console.log('exportDiscard')
+            },
+        }
+    })
+</script>

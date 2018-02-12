@@ -1,0 +1,93 @@
+<div id="reliefBalanceBox">
+	<div class="reliefBalance">
+
+		<div>
+			<span>
+				收银员:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			</span>
+			<select class="form-control relifInput" v-model="checkData.saler" @change="chooseMedicine(value)">
+				<option value="">请选择</option>
+				<option v-for="i in salerList" :value="i.userid">{{i.userName}}</option>
+			</select>
+		</div>
+		<div>
+			<span>
+				开始时间:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			</span>
+			<p>
+
+			</p>
+		</div>
+
+		<div>
+			<span>
+				结束时间:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			</span>
+			<input type="text" class="form-control relifInput" onclick="laydate()" />
+		</div>
+
+	</div>
+
+	<div class="tc">
+		<button type="button" class="btn btn-success" @click="balanceRelief">
+			交班结算
+		</button>
+	</div>
+
+</div>
+<style>
+	.reliefBalance {
+		margin-left: 200px;
+	}
+
+	.relifInput {
+		width: 20%;
+		display: inline-block;
+	}
+</style>
+
+<script>
+	$(function () {
+
+
+
+
+
+		new Vue({
+			el: '#reliefBalanceBox',
+			data: {
+				salerList: [],
+				checkData: {
+					saler: '',
+					shopid: '$usr.shopid',
+					shift_type: 0,
+
+				}
+			},
+			mounted() {
+				var that = this;
+				$.ajax({
+					type: "POST",
+					url: ' /api/shop/shop_team_select.vm',
+					data: null,
+					dataType: "json",
+					success: function (d) {
+						console.log(d, 'dddddddddddddddddddd');
+						// salerList=d.data;
+						that.salerList = [{ userid: "7772241", userName: "1588" }];
+					},
+					error: function (XMLHttpRequest, textStatus, errorThrown) {
+						console.log(XMLHttpRequest.status, 'error')
+					}
+				});
+
+			},
+			methods: {
+				balanceRelief: function () {
+					console.log('balanceRelief')
+				}
+			}
+		})
+
+	})
+</script>

@@ -1,0 +1,520 @@
+<style>
+.newDialog {
+    width: 1100px;
+    height: 600px;
+    background: white;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    z-index: 1000;
+}
+
+.chooseStores {
+    width: 1000px;
+    margin: auto;
+    height: 170px;
+}
+
+.availableText {
+    height: 50px;
+    width: 400px;
+    margin: auto;
+}
+
+.availableText p {
+    float: left;
+    line-height: 30px;
+}
+
+.availableText .selectAllStore {
+    float: right;
+}
+
+.availableStore {
+    height: 100px;
+    width: 1000px;
+}
+
+.availableStore>li {
+    float: left;
+    padding: 0 13px;
+}
+
+.middleBtn {
+    text-align: center;
+}
+
+.addNewConpon {
+    margin-bottom: 10px;
+}
+
+.dataCountText {
+    text-align: center;
+    color: blue;
+}
+</style>
+<div id="marketingProgramBox">
+    <div class="couponManage">
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>开始日期</th>
+                            <th>结束日期</th>
+                            <th>类型</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="text" class="form-control" v-model="searchList.plan_name">
+                            </td>
+                            <td>
+                                <input type="text" onclick="laydate()" class="form-control" id="beginTime">
+                            </td>
+                            <td>
+                                <input type="text" onclick="laydate()" class="form-control" id="beginTime">
+                            </td>
+                            <td>
+                                <select class="form-control" v-model="searchList.issue_type">
+                                    <option value="" >请选择</option>
+                                    <option value="birthday">会员生日</option>
+                                    <option value="custom">自定义</option>
+                                    <option value="register">注册</option>
+                                    <option value="expense">订单</option>
+                                    <option value="charge">充值</option>
+                                    <option value="points">积分</option>
+                                    <option value="share">分享</option>
+                                </select>
+                            </td>
+                            <td class="col-md-2">
+                                <button type="button" class="btn btn-success" @click="searchProgram">
+                                    查询
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="addNewConpon">
+            <button type="button" class="btn btn-success" @click="openSleepMemberDialog()">
+                沉睡会员激活
+            </button>
+            <button type="button" class="btn btn-success" @click="openffclDialog()">
+                发放策略
+            </button>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>计划名称</th>
+                            <th>发放类型</th>
+                            <th>发放条件</th>
+                            <th>优惠券</th>
+                            <th>发券总数</th>
+                            <th>销券总数</th>
+                            <th>拉动消费金额</th>
+                            <th>发券日期</th>
+                            <th>截止日期</th>
+                            <th>活动创建日期</th>
+                            <th>发行量</th>
+                            <th>发行人</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item,index) in programLists">
+                            <td>{{item.plan_name}}</td>
+                            <td>{{item.issue_type}}</td>
+                            <td>{{item.condition}}</td>
+                            <td>{{item.ticket_name}}</td>
+                            <td>{{item.issue_count}}</td>
+                            <td></td>
+                            <td></td>
+                            <td>{{item.begin_date}}</td>
+                            <td>{{item.end_date}}</td>
+                            <td>
+                                {{item.create_time}}
+                            </td>
+                            <td>
+                                {{item.issue_count}}
+                            </td>
+                            <td>
+                                {{item.issuer}}
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-success" @click="deleteCoupon(index)">
+                                    删除
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <p class="dataCountText">共{{programLists.length}}条数据</p>
+    </div>
+    <!-- 沉睡会员弹框 -->
+    <div v-if="showSleepMemberDialog" class="newDialog">
+        <div class="cosTop clearfix">
+            <div class="topName">
+                沉睡会员激活
+            </div>
+            <div class="cosClose closeBtns">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true" @click="closeSleepMemberDialog()"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped currentGood">
+                    <tbody>
+                        <tr>
+                            <td>计划名称：</td>
+                            <td>
+                                <input type="text" class="form-control" v-model="sleepLists.plan_name">
+                            </td>
+                            <td></td>
+                            <td>发放类型：</td>
+                            <td>
+                                <input type="radio" v-model="sleepLists.issue_type" value="birthday">会员生日
+                                <input type="radio" v-model="sleepLists.issue_type" value="custom">自定义
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>发行人：</td>
+                            <td>
+                                <input type="text" class="form-control" v-model="sleepLists.issuer">
+                            </td>
+                            <td></td>
+                            <td>发行量：</td>
+                            <td>
+                                <input type="text" class="form-control" v-model="sleepLists.issue_count">
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>优惠券：</td>
+                            <td>
+                                <select class="form-control" v-model="sleepLists.ticketid">
+                                <option value="">请选择</option>
+                                    <option v-for="i in curTickets" :value="i.id">{{i.ticket_name}}</option>
+                                </select>
+                            </td>
+                            <td></td>
+                            <td>备注：</td>
+                            <td colspan="2">
+                                <input type="text" class="form-control" v-model="sleepLists.remark">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="chooseStores clearfix">
+            <div class="availableText clearfix">
+                <p>适用门店: </p>
+                <div class="checkbox selectAllStore">
+                    <label>
+                        <input type="checkbox" :checked="shopLists.length === curShops.length" @click='checkedAll()'> 全选
+                    </label>
+                </div>
+            </div>
+            <ul class="availableStore clearfix">
+                <li v-for="shopItem in curShops">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" :checked="shopLists.indexOf(shopItem.shopid)>=0" @click='checkedOne(shopItem.shopid)'> {{shopItem.shopName}}
+                        </label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="middleBtn">
+            <button type="button" class="btn btn-success" @click="saveCoupon()">
+                保存
+            </button>
+        </div>
+    </div>
+    <!-- 发放策略弹框 -->
+    <div v-if="showffclDialog" class="newDialog">
+        <div class="cosTop clearfix">
+            <div class="topName">
+                发放策略
+            </div>
+            <div class="cosClose closeBtns">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true" @click="closeffclDialog()"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped currentGood">
+                    <tbody>
+                        <tr>
+                            <td>计划名称：</td>
+                            <td>
+                                <input type="text" class="form-control" v-model="sleepLists.plan_name">
+                            </td>
+                            <td></td>
+                            <td>发放类型：</td>
+                            <td>
+                                <input type="radio" v-model="sleepLists.issue_type" value="register">注册
+                                <input type="radio" v-model="sleepLists.issue_type" value="expense">订单
+                                <input type="radio" v-model="sleepLists.issue_type" value="charge">充值
+                                <input type="radio" v-model="sleepLists.issue_type" value="share">分享
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>发行人：</td>
+                            <td>
+                                <input type="text" class="form-control" v-model="sleepLists.issuer">
+                            </td>
+                            <td></td>
+                            <td>发行量：</td>
+                            <td>
+                                <input type="text" class="form-control" v-model="sleepLists.issue_count">
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>优惠券：</td>
+                            <td>
+                                <select class="form-control" v-model="sleepLists.ticketid">
+                                <option value="">请选择</option>
+                                    <option v-for="i in curTickets" :value="i.id">{{i.ticket_name}}</option>
+                                </select>
+                            </td>
+                            <td></td>
+                            <td>备注：</td>
+                            <td colspan="2">
+                                <input type="text" class="form-control" v-model="sleepLists.remark">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="chooseStores clearfix">
+            <div class="availableText clearfix">
+                <p>适用门店: </p>
+                <div class="checkbox selectAllStore">
+                    <label>
+                        <input type="checkbox" :checked="shopLists.length === curShops.length" @click='checkedAll()'> 全选
+                    </label>
+                </div>
+            </div>
+            <ul class="availableStore clearfix">
+                <li v-for="shopItem in curShops">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" :checked="shopLists.indexOf(shopItem.shopid)>=0" @click='checkedOne(shopItem.shopid)'> {{shopItem.shopName}}
+                        </label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="middleBtn">
+            <button type="button" class="btn btn-success" @click="saveCoupon()">
+                保存
+            </button>
+        </div>
+    </div>
+</div>
+<script>
+    
+
+$(function() {
+    new Vue({
+        el: '#marketingProgramBox',
+        data: {
+            curTickets: [],
+            curShops: [],
+            shopLists: [],
+            isCheckedAll: false,
+            sleepLists: {
+                plan_name: '',
+                issue_type: '',
+                issuer: '',
+                issue_count: '',
+                shopid: [],
+                remark: '',
+                ticketid: '',
+            },
+            searchList: {
+                plan_name: '',
+                issue_type: '',
+                begin_date: '',
+                end_date: '',
+            },
+            programLists: [],
+            showSleepMemberDialog: false,
+            showffclDialog: false,
+        },
+        mounted: function() {
+            this.getProgramLists();
+        },
+        methods: {
+            checkedOne: function(id) {
+                let idIndex = this.shopLists.indexOf(id)
+                if (idIndex >= 0) {
+                    this.shopLists.splice(idIndex, 1)
+                } else {
+                    this.shopLists.push(id)
+                }
+            },
+            checkedAll() {
+                this.isCheckedAll = !this.isCheckedAll
+                if (this.isCheckedAll) {
+                    this.shopLists = []
+                    this.curShops.forEach(function(fruit) {
+                        this.shopLists.push(fruit.shopid)
+                    }, this)
+                } else {
+                    this.shopLists = []
+                }
+            },
+            getCouponInfo() {
+                var that = this;
+                that.curTickets = [];
+                that.shopLists = [],
+                    $.ajax({
+                        type: "POST",
+                        url: '/api/ticket/site_ticket_select.vm',
+                        data: null,
+                        dataType: "json",
+                        success: function(d) {
+                            that.curTickets = d.data || [];
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            console.log(XMLHttpRequest.status, 'error')
+                        }
+                    });
+                $.ajax({
+                    type: "POST",
+                    url: '/api/site/site_shop.vm',
+                    data: null,
+                    dataType: "json",
+                    success: function(d) {
+                        that.curShops = d;
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        console.log(XMLHttpRequest.status, 'error')
+                    }
+                });
+            },
+           
+
+
+            saveCoupon: function() {
+                console.log(this.curTickets,'curTickets')
+                for (var i = 0; i < this.curTickets.length; i++) {
+                    if (this.curTickets[i].id == this.sleepLists.ticketid) {
+                        this.sleepLists.ticket_name = this.curTickets[i].ticket_name
+                        console.log(this.curTickets[i])
+                    }
+                }
+                this.sleepLists.shopid = this.shopLists.join(',') + ",";
+                
+                var that = this;
+                $.ajax({
+                    type: "POST",
+                    url: '/api/member/site_member_marketing_strategy_set.vm',
+                    data: this.sleepLists,
+                    dataType: "json",
+                    success: function(d) {
+
+                        if (d.code == 'success') {
+                            that.getProgramLists();
+                            that.sleepLists=[];
+                            gAlert('保存成功');
+                            
+                        } else {
+                            gAlert(d.msg);
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        gAlert('请求失败，状态码:'+XMLHttpRequest.status)
+                    }
+                });
+            },
+            deleteCoupon: function(index) {
+                var that = this;
+                $.ajax({
+                    type: "POST",
+                    url: '/api/member/site_member_marketing_strategy_delete.vm',
+                    data: { id: this.programLists[index].id },
+                    dataType: "json",
+                    success: function(d) {
+                        that.programLists.splice(index, 1);
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        console.log(XMLHttpRequest.status, 'error')
+                    }
+                });
+            },
+            openSleepMemberDialog: function() {
+                this.getCouponInfo();
+                this.showSleepMemberDialog = true;
+                $('#masking').show();
+            },
+            closeSleepMemberDialog: function() {
+                this.showSleepMemberDialog = false;
+                $('#masking').hide();
+            },
+            openffclDialog: function() {
+                this.getCouponInfo();
+                this.showffclDialog = true;
+                $('#masking').show();
+            },
+            closeffclDialog: function() {
+                this.showffclDialog = false;
+                $('#masking').hide();
+            },
+            getProgramLists: function() {
+                var that = this;
+                $.ajax({
+                    type: "POST",
+                    url: '/api/member/site_member_marketing_strategy_select.vm',
+                    data: that.searchList,
+                    dataType: "json",
+                    success: function(d) {
+                        that.programLists = d.data || [];
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        console.log(XMLHttpRequest.status, 'error')
+                    }
+                });
+            },
+            searchProgram: function() {
+                this.searchList.begin_date = $('#beginTime').val();
+                this.searchList.end_date = $('#endTime').val();
+                this.getProgramLists();
+            }
+        }
+    })
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>

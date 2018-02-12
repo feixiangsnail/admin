@@ -1,0 +1,157 @@
+<div id="resumeReportBox">
+    <div class="resumeReport">
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <!-- 						 -->
+                        <tr>
+                            <th>门店选择</th>
+                            <th>会员号</th>
+                            <th>消费类型</th>
+                            <th>起始时间</th>
+                            <th>结束时间</th>
+                            <th>充值方式</th>
+                            <th>备注</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <select class="form-control form-controlSelect">
+                                    <option>请选择</option>
+                                    <option>现金券</option>
+                                    <option>产品券</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control">
+                            </td>
+                            <td>
+                                <select class="form-control form-controlSelect">
+                                    <option>请选择</option>
+                                    <option>现金券</option>
+                                    <option>产品券</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" onclick="laydate()" class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" onclick="laydate()" class="form-control">
+                            </td>
+                            <td>
+                                <select class="form-control form-controlSelect">
+                                    <option>请选择</option>
+                                    <option>现金券</option>
+                                    <option>产品券</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control">
+                            </td>
+                            <td class="col-md-2">
+                                <button type="button" class="btn btn-success">
+                                    查询
+                                </button>
+                                <button type="button" class="btn btn-success">
+                                    Excel
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="pages">
+            <page :allpage="resumeData.totalPage" :currentPage="resumeData.curPage" :showitem="resumeData.perPage" @navpage="showResumeLists"></page>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>会员号</th>
+                            <th>姓名</th>
+                            <th>手机号</th>
+                            <th>类型</th>
+                            <th>金额</th>
+                            <th>金币</th>
+                            <th>消费时间</th>
+                            <th>备住</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in resumeData.currencyLists">
+                            <td> {{item.a}}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <p class="tc">共4条数据</p>
+    </div>
+</div>
+<link rel="stylesheet" href="./component/paginationVue.css">
+<script src="./component/paginationVue.js"></script>
+<script>
+new Vue({
+    el: '#resumeReportBox',
+    data: {
+        resumeData: {
+            totalPage: 39,
+            curPage: 1,
+            perPage: 6,
+            listCount: 5,
+            currencyLists: [],
+            allLists: [
+                { a: 1 },
+                { a: 23 },
+                { a: 24 },
+                { a: 25 },
+                { a: 26 },
+                { a: 27 },
+                { a: 28 },
+                { a: 29 },
+                { a: 30 },
+                { a: 31 },
+                { a: 32 },
+                { a: 33 },
+                { a: 34 },
+                { a: 35 },
+                { a: 36 },
+                { a: 37 },
+                { a: 38 },
+            ]
+        },
+    },
+    mounted: function() {
+        this.showResumeLists(1);
+    },
+    methods: {
+        showResumeLists: function(pageIndex) {
+
+            var c = this.resumeData;
+            c.totalPage = Math.floor(c.allLists.length / c.listCount) + 1;
+            c.curPage = pageIndex;
+            c.currencyLists = c.allLists.slice((pageIndex - 1) * c.listCount, pageIndex * c.listCount);
+
+
+
+        }
+    }
+})
+</script>
+
+
+
+
+

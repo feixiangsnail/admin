@@ -1,0 +1,99 @@
+<div id="memberPolicyBox">
+    <div class="memberPolicy">
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>等级名称</th>
+                            <th>策略类型</th>
+                            <th>设置消费金额</th>
+                            <th>设置优惠值</th>
+                            <th>描述</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in paySetData" :id="item.id">
+                            <td>
+                                <input type="hidden" class="form-control" />
+                                <p>{{item.level_name}}</p>
+                            </td>
+                            <td class="col-md-2">
+                                <select class="form-control" v-model="item.policy_type">
+                                    <option  value="">请选择</option>
+                                    <option v-for="typeValue in type"  :value='typeValue.policyType'>{{typeValue.typeName}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" v-model="item.order_totalfee"/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" v-model="item.policy_value"/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" v-model="item.remark"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="tc">
+            <button class="btn btn-success" v-on:click='saveData()'>保存</button>
+        </div>
+    </div>
+</div>
+<style>
+.policyCreatTime {
+    line-height: 35px;
+    font-weight: 900;
+    text-align: center;
+}
+</style>
+<script>
+$(function() {
+    new Vue({
+        el: '#memberPolicyBox',
+        data: {
+            curPolicyIndex: 0,
+            showSetFormula: false,
+            paySetData: [],
+            type:[{"policyType":"0","typeName":"会员价"},{"policyType":"1","typeName":"满减"},{"policyType":"2","typeName":"折扣"}]
+        },
+        mounted: function() {
+            this.getPolicyLists();
+        },
+        methods: {
+            getPolicyLists: function() {
+                var that = this;
+                $.ajax({
+                    type: "GET",
+                    url: "/api/member/site_buyer_policy_formula_select.vm",
+                    data: null,
+                    success: function(data) {
+                       var data = JSON.parse(data);  
+                       that.paySetData=data.data;
+                     
+                    }
+                });
+            },
+           saveData:function(){
+               $('select').each(function(){
+                // alert($(this).val());  
+               })   
+               var sendData=this.paySetData;
+               console.log(sendData)
+               //$.ajax({
+                // type: "POST",
+                 //data:{datas: d},
+                  //  url: "/api/memeber/site_buyer_level_set.vm",              
+                   // dataType: "json",
+                 //success: function (d) {
+                  // console.log(d)
+                // }
+             //});
+          } 
+        }
+    })
+})
+</script>

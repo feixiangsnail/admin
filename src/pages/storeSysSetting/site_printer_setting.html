@@ -1,0 +1,90 @@
+<div id="printerSetBox">
+	<div class="printerSet">
+		<div>
+			<span>
+				选择打印机:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			</span>
+			<select class="form-control choosePrinter">
+				<option v-for="i in 5" :value="i">{{i}}</option>
+			</select>
+		</div>
+		<div class="printerTest">
+			<div>
+				打印测试内容:
+			</div>
+			<div class="printerTextArea">
+				<textarea name="" rows="5" cols="70"></textarea>
+			</div>
+			<div class="printBtn">
+				<button type="button" class="btn btn-success" @click="printContent">
+				打印
+			</button>
+			</div>
+		</div>
+
+		<div>
+			<span>
+				输入设备端口号:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			</span>
+			<input class="form-control choosePrinter" />
+
+			<button type="button" class="btn btn-success" @click="enableService">
+				启动设备
+			</button>
+		</div>
+
+		<div class="printerTest">
+			<div>
+				打印测试内容:
+			</div>
+			<div class="printerTextArea">
+				<textarea name="" rows="5" cols="70"></textarea>
+			</div>
+			<div class="printBtn">
+				<button type="button" class="btn btn-success" @click="sendToService">
+					发送到设备
+				</button>
+			</div>
+		</div>
+
+	</div>
+
+</div>
+<style>
+	.choosePrinter {
+		width: 30%;
+		display: inline-block;
+	}
+	
+	.printerTest {
+		margin-top: 50px;
+	}
+	
+	.printerTextArea {
+		margin-left: 90px;
+	}
+	
+	.printBtn {
+		margin-left: 260px;
+		margin-bottom: 30px;
+	}
+</style>
+<script>
+	new Vue({
+		el: '#printerSetBox',
+		data: {
+
+		},
+		methods: {
+			enableService: function() {
+				console.log('enableService')
+			},
+			printContent: function() {
+				console.log('printContent')
+			},
+			sendToService: function() {
+				console.log('sendToService')
+			}
+		}
+	})
+</script>

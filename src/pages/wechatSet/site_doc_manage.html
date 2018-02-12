@@ -1,0 +1,285 @@
+<div id="docManageBox">
+    <div class="docManage">
+        <div class="addInfo">
+            <button type="button" class="btn btn-success" @click="openDocDg">
+                新增图文信息
+            </button>
+            <button type="button" class="btn btn-success" @click="openTextDg">
+                新增文本信息
+            </button>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>信息名称</th>
+                            <th>类型</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item,index) in docList">
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-success" @click="editContent">
+                                    编辑
+                                </button>
+                                <button type="button" class="btn btn-success">
+                                    删除
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div v-if="showDocDg" class="docDg">
+        <div class="cosTop clearfix">
+            <div class="topName">
+                新增图文信息
+            </div>
+            <div class="cosClose closeBtns">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true" @click="closeDocDg()"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+
+                    <tbody>
+                        <tr>
+                            <td>信息名称：</td>
+                            <td>
+                                <input type="text" class="form-control">
+                            </td>
+
+                            <td>主标题：</td>
+                            <td>
+                                <input type="text" class="form-control">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>图片URL：</td>
+                            <td>
+                                <input type="text" class="form-control">
+                            </td>
+
+                            <td>详情URL：</td>
+                            <td>
+                                <select class="form-control">
+                                    <option value="">请选择</option>
+                                    <option value="0">折扣</option>
+                                    <option value="1">现金</option>
+                                </select>
+
+
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>描述：</td>
+                            <td colspan="3">
+                                <input type="text" class="form-control">
+                            </td>
+
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>标题</th>
+                            <th>图片(200x200)</th>
+                            <th>url</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="text" class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control">
+                            </td>
+                            <td>
+                                <select class="form-control">
+                                    <option value="">请选择</option>
+                                    <option value="0">折扣</option>
+                                    <option value="1">现金</option>
+                                </select>
+                            </td>
+                            <td>
+
+                                <button type="button" class="btn btn-success">
+                                    删除
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tc btns">
+
+            <button type="button" class="btn btn-success addBtn">
+                新增
+            </button>
+
+
+            <button type="button" class="btn btn-success">
+                保存设置
+            </button>
+        </div>
+
+
+
+
+
+
+
+
+
+    </div>
+    <div v-if="showTextDg" class="textDg">
+        <div class="cosTop clearfix">
+            <div class="topName">
+                新增文本信息
+            </div>
+            <div class="cosClose closeBtns">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true" @click="closeTextDg()"></span>
+            </div>
+        </div>
+
+        <div class="textList">
+            信息名称：
+            <input type="text" class="form-control form-controlInline">
+        </div>
+        <div class="textList">
+            选择链接：
+            <select class="form-control form-controlInline">
+                    <option value="">请选择</option>
+                    <option value="0">折扣</option>
+                    <option value="1">现金</option>
+                </select>
+            
+        </div>
+        <div class="textList">
+                <label style="vertical-align:top" >内容：</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <textarea type="text" class="form-control formRemark">
+                </textarea>
+        </div>
+        <div class="tc">
+                <button type="button" class="btn btn-success">
+                        保存设置
+                    </button>
+        </div>
+    </div>
+</div>
+<style>
+    #docManageBox .addInfo {
+        margin: 10px 10px;
+    }
+
+    #docManageBox .docDg {
+        width: 1000px;
+        height: 600px;
+        background: white;
+        position: absolute;
+        margin: auto;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+
+    }
+
+    #docManageBox .textDg {
+        width: 800px;
+        height: 600px;
+        background: white;
+        position: absolute;
+        margin: auto;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+    }
+
+    #docManageBox .btns {
+        position: relative;
+
+    }
+
+    #docManageBox .btns .addBtn {
+        position: absolute;
+        left: 20px;
+    }
+
+
+    #docManageBox .form-controlInline {
+		display: inline-block;
+		width: 30%;
+		margin-left: 20px;
+	}
+
+	#docManageBox .textList {
+        margin-left:30px;
+		margin-bottom: 20px;
+	}
+    #docManageBox .formRemark{
+        display: inline-block;
+		width: 60%;
+        height:150px;
+		margin-left: 20px;
+    }
+
+</style>
+<script>
+    new Vue({
+        el: '#docManageBox',
+        data: {
+            docList: [{}],
+            showDocDg: false,
+            showTextDg: false,
+        },
+        methods: {
+            openDocDg() {
+                $('#masking').show();
+                this.showDocDg = true;
+            },
+            openTextDg() {
+                $('#masking').show();
+                this.showTextDg = true;
+            },
+            closeDocDg() {
+                $('#masking').hide();
+                this.showDocDg = false;
+            },
+            closeTextDg() {
+                $('#masking').hide();
+                this.showTextDg = false;
+            },
+            editContent(){
+                $('#masking').show();
+                this.showTextDg = true;
+            }
+        }
+    })
+</script>

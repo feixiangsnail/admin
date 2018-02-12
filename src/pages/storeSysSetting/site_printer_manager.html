@@ -1,0 +1,96 @@
+<div id="printerManagerBox">
+	<div class="printerManager">
+		<div>
+
+			<button type="button" class="btn btn-success" @click="updateDrivePrinter">
+					更新驱动打印机
+				</button>
+			<button type="button" class="btn btn-success" @click="updateUSBService">
+					更新USB设备
+				</button>
+			<span>
+					只有安装驱动的打印机可以自动更新入系统， 网口、并口打印机需要手动添加
+				</span>
+		</div>
+
+		<div class="row">
+			<div class="col-xs-12 table-responsive">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>序号</th>
+							<th>IP/端口名</th>
+							<th>备用IP</th>
+							<th> 名称</th>
+							<th>顺序</th>
+							<th>删除</th>
+							<th>打印测试</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>1</td>
+							<td>
+								<input type="text" class="form-control">
+							</td>
+							<td>
+								<input type="text" class="form-control">
+							</td>
+
+							<td>
+								<input type="text" class="form-control">
+							</td>
+							<td>
+								<input type="text" class="form-control">
+							</td>
+							<td>
+								<button type="button" class="btn btn-success" @click="deletePrinter">
+                                    删除
+                                </button>
+							</td>
+							<td>
+								<button type="button" class="btn btn-success" @click="printTest">
+                                   打印测试
+                                </button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	<div class="tc">
+		<button type="button" class="btn btn-success">
+                                    保存设置
+        </button>
+	</div>
+	</div>
+
+</div>
+
+<style>
+
+</style>
+<script>
+	new Vue({
+		el: '#printerManagerBox',
+		data:{
+			
+		},
+		methods:{
+			updateDrivePrinter:function(){
+				console.log('updateDrivePrinter')
+			},
+			updateUSBService:function(){
+				console.log('updateUSBService')
+			},
+			deletePrinter:function(){
+				console.log('deletePrinter')
+			},
+			printTest:function(){
+				console.log('printTest')
+			}
+		}
+
+	})
+</script>

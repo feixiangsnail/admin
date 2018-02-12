@@ -1,0 +1,48 @@
+<div id="dayBalanceBox">
+	<div class="dayBalance">
+
+		<div>
+			<span>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;日结日期:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			</span>
+			<input type="text" class="form-control dayBalanceInput" onclick="laydate()" />
+		</div>
+		<div>
+			<span>
+				日结算时间点:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			</span>
+			<input type="text" class="form-control dayBalanceInput" />
+		</div>
+
+
+	</div>
+
+	<div class="tc">
+		<button type="button" class="btn btn-success" @click="startBalance">
+			结算
+		</button>
+	</div>
+
+</div>
+<style>
+	.dayBalance {
+		margin-left: 200px;
+	}
+
+	.dayBalanceInput {
+		width: 20%;
+		display: inline-block;
+	}
+</style>
+
+<script>
+	new Vue({
+		el: '#dayBalanceBox',
+		data: {},
+		methods: {
+			startBalance: function () {
+				console.log('startBalance')
+			}
+		}
+	})
+</script>

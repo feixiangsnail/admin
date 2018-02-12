@@ -1,0 +1,113 @@
+<div id="configMealBox">
+	<div class="configMeal">
+
+		<div class="row">
+			<div class="col-xs-12 table-responsive">
+				<table class="table table-striped">
+					<thead>
+						<!-- 			 -->
+						<tr>
+							<th>名称</th>
+							<th>开始日期</th>
+							<th>结束日期</th>
+							<th>类型</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								<input type="text" class="form-control">
+							</td>
+							<td>
+								<input type="text" class="form-control">
+							</td>
+							<td>
+								<input type="text" class="form-control">
+							</td>
+							<td>
+								<select class="form-control form-controlSelect">
+									<option>请选择</option>
+									<option>现金券</option>
+									<option>产品券</option>
+								</select>
+							</td>
+							<td class="col-md-2">
+								<button type="button" class="btn btn-success">
+                                    导出
+                                </button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="printerBar">
+			<input type="text" class="form-control">
+			<button type="button" class="btn btn-success" @click="batchSet">
+                                    批量设置
+             </button>
+		</div>
+		<div class="mealList">
+			<!--	  -			-->
+			<div class="row">
+				<div class="col-xs-12 table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th class="col-md-1">全选
+									<input type="checkbox">
+								</th>
+								<th>餐ID</th>
+								<th>产品名-编号</th>
+						
+								<th>大类</th>
+								<th>类型</th>
+								<th>打印机</th>
+								
+
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<input type="checkbox">
+								</td>
+
+							
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		
+		</div>
+	</div>
+</div>
+
+<style>
+	.printerBar>input{
+		width:20%;
+		display: inline-block;
+		margin-left:8px;
+		
+	}
+</style>
+
+<script type="text/javascript">
+	new Vue({
+		el:'#configMealBox',
+		data:{},
+		methods:{
+			batchSet:function(){
+				console.log('batchSet')
+			}
+		}
+	})
+</script>

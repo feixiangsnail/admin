@@ -1,0 +1,163 @@
+<div id="dealDetailBox">
+    <div class="dealDetail">
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>分店</th>
+                            <th>用户号</th>
+                            <th>卡号</th>
+                            <th>手机号</th>
+                            <th>类别</th>
+                            <th>类型</th>
+                            <th>支付方式</th>
+                            <th>时间</th>
+                            <th>查询</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <select class="form-control">
+                                    <option>请选择</option>
+                                    <option>男</option>
+                                    <option>女</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control">
+                            </td>
+                            <td>
+                                <select class="form-control">
+                                    <option>请选择</option>
+                                    <option>男</option>
+                                    <option>女</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-control">
+                                    <option>请选择</option>
+                                    <option>男</option>
+                                    <option>女</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-control">
+                                    <option>请选择</option>
+                                    <option>男</option>
+                                    <option>女</option>
+                                </select>
+                            </td>
+                            <td>
+                                <div class="input-group input-daterange">
+                                    <input type="text" onclick="laydate()" class="form-control form-control2">
+                                    <div class="input-group-addon">to</div>
+                                    <input type="text" onclick="laydate()" class="form-control form-control2">
+                                </div>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-success" @click="searchCurrency()">
+                                    查询
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <p class="remainMoney">会员余额：{{currencyData.remainCurrency}}</p>
+        <div class="pages">
+            <page :allpage="currencyData.totalPage" :currentPage="currencyData.curPage" :showitem="currencyData.perPage" @navpage="showCurrency"></page>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>门店</th>
+                            <th>用户</th>
+                            <th>卡号</th>
+                            <th>方式</th>
+                            <th>实付</th>
+                            <th>金币</th>
+                            <th>时间</th>
+                            <th>余额</th>
+                            <th>单号</th>
+                            <th>备注</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in currencyData.currencyLists">
+                            <td>{{item.a}}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="col-md-1">
+                                <input type="text" class="form-control">
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td class="col-md-1">
+                                <input type="text" class="form-control">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="./component/paginationVue.css">
+<script src="./component/paginationVue.js"></script>
+<script>
+new Vue({
+    el: '#dealDetailBox',
+    data: {
+        currencyData: {
+            remainCurrency: 50,
+            count: 20,
+            totalPage: 39,
+            curPage: 1,
+            perPage: 6,
+            listCount: 5,
+            currencyLists: [],
+            allLists: [
+
+                { a: 24 },
+                { a: 25 },
+                { a: 35 },
+                { a: 36 },
+                { a: 37 },
+                { a: 38 },
+            ]
+        },
+    },
+    mounted: function() {
+        this.showCurrency(1);
+    },
+    methods: {
+        showCurrency: function(pageIndex) {
+
+            var c = this.currencyData;
+            c.totalPage = Math.floor(c.allLists.length / c.listCount) + 1;
+            c.curPage = pageIndex;
+            c.currencyLists = c.allLists.slice((pageIndex - 1) * c.listCount, pageIndex * c.listCount);
+
+
+
+        },
+    }
+})
+</script>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>福汇后台管理系统</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="bower_components/Ionicons/css/ionicons.min.css">
+    <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="dist/css/skins/skin-blue.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-select.css">
+    <link rel="stylesheet" href="component/paginationVue.css">
+    <link rel="stylesheet" href="assets/css/base.css">
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="dist/js/adminlte.min.js" type="text/javascript"></script>
+    <script src=" assets/js/vue.js" type="text/javascript"></script>
+    <script src="assets/js/axios.js"></script>
+    <script src="assets/js/bootstrap-select.js"></script>
+    <script src="http://icy.iidingyun.com/scm/lay/lib/laydate/laydate.js"></script>
+    <script src="assets/js/bootstrap-dialog.min.js"></script>
+    <script src="assets/js/pagePeak.js"></script>
+    <script src="assets/js/routermix.js"></script>
+    <script src="assets/js/routes.js"></script>
+    <script src="assets/js/index.js"></script>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <!-- 遮罩层 -->
+    <div id="masking"></div>
+    <div class="wrapper">
+        <!-- 头部栏 -->
+        <header class="main-header">
+            <nav class="navbar navbar-static-top" role="navigation">
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+          <span class="sr-only">Toggle navigation</span>
+        </a>
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- 左侧栏 -->
+        <aside class="main-sidebar">
+            <section class="sidebar">
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li><a href="#/"><i class="fa fa-book"></i> <span> 总部运营报表</span></a></li>
+                    <li><a href="#/accountSet"><i class="fa fa-book"></i> <span>微信设置</span></a></li>
+                    <li><a href="#/"><i class="fa fa-book"></i> <span>产品管理</span></a></li>
+                    <li><a href="#/"><i class="fa fa-book"></i> <span>订单管理</span></a></li>
+                    <li><a href="#/"><i class="fa fa-book"></i> <span> 运营报表</span></a></li>
+                    <li><a href="#/"><i class="fa fa-book"></i> <span>门店管理</span></a></li>
+                    <li><a href="#/couponManage"><i class="fa fa-book"></i> <span>会员营销</span></a></li>
+                    <li><a href="#/memberSchema"><i class="fa fa-book"></i> <span>会员管理</span></a></li>
+                    <li><a href="#/rechargeReport"><i class="fa fa-book"></i> <span>会员报表</span></a></li>
+                    <li><a href="#/"><i class="fa fa-book"></i> <span> 组件管理</span></a></li>
+                    <li><a href="#/"><i class="fa fa-book"></i> <span>团队管理</span></a></li>
+                    <li><a href="#/"><i class="fa fa-book"></i> <span>订单管理</span></a></li>
+                    <li><a href="#/"><i class="fa fa-book"></i> <span>模板选择</span></a></li>
+                    <li><a href="#/systemSetting"><i class="fa fa-book"></i> <span>系统设置</span></a></li>
+                    
+                    <li><a href="#/payWay_setting"><i class="fa fa-book"></i> <span>门店系统设置</span></a></li>
+                    <li><a href="#/relief_balance"><i class="fa fa-book"></i> <span>门店结算系统</span></a></li>
+                    <li><a href="#/wechat_reconciliate"><i class="fa fa-book"></i> <span>门店对账系统</span></a></li>
+                </ul>
+            </section>
+        </aside>
+        <!-- 中间内容区 -->
+        <div class="content-wrapper">
+            <div id="mainRouter">
+            </div>
+        </div>
+        <!-- 底栏 -->
+        <footer class="main-footer">
+            <strong>Copyright &copy; 2016<a href="#">Company</a>.</strong> All rights reserved.
+        </footer>
+    </div>
+</body>
+
+</html>

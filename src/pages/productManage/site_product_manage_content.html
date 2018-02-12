@@ -1,0 +1,1247 @@
+  <link rel="stylesheet" href="http://userjs.iidingyun.com/data/2452/css/productManage.css">
+  
+        
+<section class="contentMain" id="contentMain">
+        
+        <div class="navContent">
+
+          <!-- 搜索表格 -->
+          <div class="row">
+            <div class="col-xs-12 table-responsive">
+              <table class="table table-striped currentGood">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>编号</th>
+                    <th>名称</th>
+                    <th>价格</th>
+                    <th>大类</th>
+                    <th>类型</th>
+                  
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <input type="text" class="form-control">
+                    </td>
+                    <td>
+                      <input type="text" class="form-control">
+                    </td>
+                    <td>
+                      <input type="text" class="form-control">
+                    </td>
+                    <td>
+                      <input type="text" class="form-control form-control2">--
+                      <input type="text" class="form-control form-control2">
+                    </td>
+                    <td>
+                      <select class="form-control">
+                        <option>请选择</option>
+
+                      </select>
+                    </td>
+                    <td>
+                      <select class="form-control">
+                        <option>请选择</option>
+                        <option>港式</option>
+                        <option>澳式</option>
+                        <option>精品</option>
+                        <option>饮品</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="form-control">
+                        <option>请选择</option>
+                        <option>直营店</option>
+                        <option>加盟店</option>
+                      </select>
+                    </td>
+                    <td>
+                      <button type="button" class="btn btn-success">搜索</button>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- 新增处理 -->
+          <div class="handleProduct">
+            <button type="button" class="btn btn-success" id="addProduct">新增产品</button>
+            <button type="button" class="btn btn-success">导出Excel</button>
+          </div>
+          <!-- 列表项 -->
+
+          <div id="productList">
+
+
+          <div class="row">
+            <div class="col-xs-12 table-responsive">
+              <table class="table table-striped currentGood">
+                <thead>
+                  <tr>
+                    <th>
+                      <input type="checkbox" name="" id="">
+                    </th>
+                    <th>编号</th>
+                    <th>名称</th>
+                    <th>大类</th>
+                    <th>类型</th>
+                  
+                    <th>推荐</th>
+                    <th>价格</th>
+                    <th>修改</th>
+                    <th>属性选项</th>
+                    <th>产品设置</th>
+                    <th>设置</th>
+                    <th>同步设置</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for='item in allProductArr' :productid="item.productid" v-cloak>
+                    <td>
+                      <input type="checkbox" name="" id="">
+                    </td>
+                    <td>{{item.product_code}}</td>
+                    <td>{{item.product_name}}</td>
+                    <td>{{item.big_type_name}}</td>
+                    <td>{{item.type_name}}</td>
+                   
+                    <td>{{item.hot}}</td>
+                    <td>{{item.price}}</td>
+                    <td class="modifyBtn">修改</td>
+                    <td class="comboSetBtn">套餐设置</td>
+                    
+                    <td class="productSetBtn">设置</td>
+                    <td class="setBtn">设置</td>
+                    <td class="syncBtn">同步</td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+          <!-- 弹框 -->
+          <div class="masking">
+
+
+          </div>
+          <!-- 新增界面 -->
+          <div class="addWrap" id="addWrap">
+
+            <div class="cosTop clearfix">
+              <div class="topName">
+                新增产品
+              </div>
+              <div class="cosClose addWrapClose closeBtns">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xs-12 table-responsive">
+                <table class="table table-striped currentGood">
+                  <thead>
+                    <tr>
+                      <th>产品名</th>
+                      <th>编号</th>
+                      <th>大类</th>
+                      <th>类型</th>
+                      <th>售卖单位</th>
+                      <th>关键字</th>
+                      <th>生产时长</th>
+                      <th>价格</th>
+                      <th>会员价格</th>
+                      <th>折扣方式</th>
+                      <th>详细描述</th>
+                      <th>上传图片</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <input id="addName" type="text" class="form-control">
+                      </td>
+                      <td>
+                        <input id="addNo" type="text" class="form-control">
+                      </td>
+
+                      <td>
+                        <select id="addBigType" class="form-control">
+                          <option v-for="type in bigTypeArr" :id='type.id'>{{type.type_name}}</option>
+                        </select>
+                      </td>
+                      <td>
+                        <select id="addType" class="form-control">
+                          <option v-for="tp in typeArr" :id="tp.id">{{tp.type_name}}</option>
+                      
+                        </select>
+                      </td>
+                      <td>
+                        <select id="addUnit" class="form-control">
+                          <option :product_unit_id="1">份</option>
+                          <option :product_unit_id="2">称重(KG)</option>
+                         
+                        </select>
+                      </td>
+                      <td>
+                        <input id="addKeyWord" type="text" class="form-control">
+                      </td>
+
+                      <td>
+                        <input id="addKeyTime" type="text" class="form-control">
+                      </td>
+                      <td>
+                        <input id="addPrice" type="text" class="form-control">
+                      </td>
+                      <td>
+                        <input id="addMemberPrice" type="text" class="form-control">
+                      </td>
+
+                      <td>
+                        <select id="addDiscount" class="form-control">
+                          <option :discount_way_id='0'>不参与</option>
+                          <option :discount_way_id='1'>参与</option>
+                        </select>
+                      </td>
+
+                      <td>
+                        <input id="addDesc" type="text" class="form-control">
+                      </td>
+                      <td>
+                       
+                       
+                        <div class="item-input">
+                          <div class="a-upload">
+                          <input type="file" id="file_door_img" data-id="door_img" capture="camera" accept="*/*">
+                          <input type="hidden" name="door_img" id="door_img" value="">
+                          </div>
+                          </div>
+                          <div id="img_upload"></div>
+                       
+                      </td>
+
+
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+
+
+            <div class="addWrapBot">
+
+              <span>同时发布到所有门店: </span>
+              <input type="checkbox">
+              <button type="button" id="addSure" class="btn btn-success">确定</button>
+              
+              <button type="button" id="addClose" class="btn btn-success closeBtns">关闭</button>
+
+            </div>
+          </div>
+          <!-- 修改界面 -->
+          <div class="modifyWrap">
+            <div class="cosTop clearfix">
+              <div class="topName">
+                修改产品
+              </div>
+              <div class="cosClose closeBtns">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+              </div>
+            </div>
+
+            <div class="row modifyConfig">
+              <div class="col-xs-12 table-responsive">
+                <table class="table table-striped currentGood">
+
+                  <tbody>
+                    <tr>
+                      <td>名称：</td>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      <td>收银系统用</td>
+
+                      <td>全称：</td>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      <td>顾客点餐用 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>代号：</td>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      <td>关键字检索时使用</td>
+
+                      <td>编号：</td>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>大类：</td>
+                      <td>
+                        <select class="form-control">
+                          <option>请选择</option>
+                          <option>直营店</option>
+                          <option>加盟店</option>
+                        </select>
+                      </td>
+                      <td></td>
+
+                      <td>类型：</td>
+                      <td>
+                        <select class="form-control">
+                          <option>请选择</option>
+                          <option>直营店</option>
+                          <option>加盟店</option>
+                        </select>
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>门店类型：</td>
+                      <td>
+                        <select class="form-control">
+                          <option>请选择</option>
+                          <option>直营店</option>
+                          <option>加盟店</option>
+                        </select>
+                      </td>
+                      <td></td>
+
+                      <td>推荐：</td>
+                      <td>
+                        <select class="form-control">
+                          <option>请选择</option>
+                          <option>直营店</option>
+                          <option>加盟店</option>
+                        </select>
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>排列顺序：</td>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      <td></td>
+
+                      <td>推荐顺序：</td>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>生产时长(分钟)：</td>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      <td>小于0表示直接上菜，不出单到厨房</td>
+
+                      <td>价格：</td>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>会员价格：</td>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      <td></td>
+
+                      <td>折扣方式：</td>
+                      <td>
+                        <select class="form-control">
+                          <option>请选择</option>
+                          <option>直营店</option>
+                          <option>加盟店</option>
+                        </select>
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>照片：</td>
+                      <td>
+                        <input type="file" class="form-control">
+                      </td>
+                      <td></td>
+
+                      <td>描述：</td>
+                      <td colspan="2">
+                        <textarea class="form-control" rows="3"></textarea>
+                      </td>
+                      
+                    </tr>
+                    <tr>
+                      <td>规格：</td>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+
+                    </tr>
+
+
+
+
+
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xs-12 table-responsive">
+                <table class="table table-striped currentGood">
+                  <thead>
+                    <tr>
+                      <th>收银编码</th>
+                      <th>规格名</th>
+                      <th>价格</th>
+                      <th>库存</th>
+
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      <td>
+                        <input type="text" class="form-control">
+
+                      </td>
+                      <td>
+                        <button type="button" class="btn btn-success">删除</button>
+                      </td>
+
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <button type="button" class="btn btn-success">添加</button>
+                      </td>
+                      <td>
+                        <button type="button" class="btn btn-success">清空</button>
+                      </td>
+                      <td>
+                        <button type="button" class="btn btn-success">保存规格</button>
+                      </td>
+
+                      <td>
+                        <button type="button" class="btn btn-success">保存</button>
+                      </td>
+                      <td>
+
+
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          </div>
+          <!-- 套餐设置界面 -->
+          <div class="comboSetWrap">
+            <div class="cosTop clearfix">
+              <div class="topName">
+                木须肉选项配置
+              </div>
+              <div class="cosClose closeBtns">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xs-12 table-responsive">
+                <table class="table table-striped currentGood">
+                  <thead>
+                    <tr>
+                      <th>编码</th>
+                      <th>属性选项类型</th>
+                      <th>属性组名称</th>
+                      <th>最多选择数量</th>
+                      <th>最低选择数量</th>
+                      <th>基础价格</th>
+                      <th>顺序</th>
+                      <th>配置</th>
+                      <th>删除</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      <td>
+                        <select class="form-control">
+                          <option>请选择</option>
+                          <option>停用</option>
+                          <option>必须配置</option>
+                          <option>可选配置</option>
+                        </select>
+                      </td>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      <td>
+                        <select class="form-control">
+                          <option>请选择</option>
+
+                        </select>
+                      </td>
+                      <td>
+                        <select class="form-control">
+                          <option>请选择</option>
+                          <option>港式</option>
+                          <option>澳式</option>
+                          <option>精品</option>
+                          <option>饮品</option>
+                        </select>
+                      </td>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+
+                      <td>
+                        <button type="button" class="btn btn-success comboConfBtn">选项配置</button> 
+                      </td>
+                      <td>
+                        <button type="button" class="btn btn-success">增加</button>
+                      </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="saveComboSet">
+              <button type="button" class="btn btn-success">保存设置</button>
+
+            </div>
+          </div>
+          
+          <!-- 套餐设置配置界面 -->
+          
+          <div class="comboConfigWrap">
+            <div class="cosTop clearfix">
+              <div class="topName">
+                香菇炖鸡pipai选项配置
+              </div>
+              <div class="cosClose cosComboClose">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+              </div>
+            </div>
+
+            <div class="existProperty clearfix">
+              已有属性
+              
+            </div>
+
+            <div class="comboConfTopRow">
+            <div class="row">
+              <div class="col-xs-12 table-responsive">
+                <table class="table table-striped currentGood">
+                  <thead>
+                    <tr>
+                      <th>名称</th>
+                      <th>最低选择数量</th>
+                      <th>最多选择数量</th>
+                      <th>顺序</th>
+                      <th>基础价格</th>                   
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>                 
+                      <td>
+                        <select class="form-control">
+                          <option>请选择</option>
+                        </select>
+                      </td>
+                      <td>
+                        <select class="form-control">
+                          <option>请选择</option>
+                          <option>港式</option>
+                          <option>澳式</option>
+                          <option>精品</option>
+                          <option>饮品</option>
+                        </select>
+                      </td>
+                      
+                     
+
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      
+
+
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+          
+
+
+          <div class="comboConfBotRow">
+            <div class="row">
+              <div class="col-xs-12 table-responsive">
+                <table class="table table-striped currentGood">
+                  <thead>
+                    <tr>
+                      <th>名称（公共属性名）</th>
+                      <th>顾客显示名称</th>
+                      <th>价格</th>
+                      <th>最多可选</th>
+                      <th>上传图片</th>
+                      <th>关联产品</th>     
+                      
+                      <th>顺序</th>
+                      <th>默认</th>
+                      <th>删除</th>   
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>  
+                      <td>
+                        <input type="text" class="form-control">
+                      </td> 
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>                
+                      <td>
+                        <select class="form-control">
+                          <option>请选择</option>
+                        </select>
+                      </td>
+                      <td>
+                        <input type="file" class="form-control">
+                      </td> 
+                      
+                      
+                     
+
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      <td>
+                        <input type="text" class="form-control">
+                      </td>
+                      
+                      <th>
+                        <input type="checkbox" name="" id="">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      </th>
+                      <td>
+                        <button type="button" class="btn btn-success">删除</button>
+                      </td>
+                      
+
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="saveComboConf">
+            <button type="button" class="btn btn-success">保存设置</button>
+
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <!-- 产品设置界面 -->
+          <div class="productSetWrap">
+              <div class="cosTop clearfix">
+                  <div class="topName">
+                      产品设置
+                  </div>
+                  <div class="cosClose closeBtns">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                  </div>
+                </div>
+                
+                <ul class="availableStore clearfix">
+                  <li>
+                      <p>适用门店:</p>
+                      <div class="checkbox selectAllStore">
+                          <label>
+                            <input type="checkbox">
+                            全选
+                          </label>
+                        </div>
+
+                  </li>
+                  
+                  <li>
+                      
+                      <div class="checkbox">
+                          <label>
+                            <input type="checkbox">
+                            艾科特(筹备店)
+                          </label>
+                        </div>
+                  </li>
+                  <li>
+                      <div class="checkbox">
+                          <label>
+                            <input type="checkbox">
+                            深圳爱订
+                          </label>
+                        </div>
+                  </li>
+                  <li>
+                      
+                      <div class="checkbox">
+                          <label>
+                            <input type="checkbox">
+                            上海爱订
+                          </label>
+                        </div>
+                  </li>
+                  <li>
+                      
+                      <div class="checkbox">
+                          <label>
+                            <input type="checkbox">
+                            上海爱订
+                          </label>
+                        </div>
+                  </li>
+                  <li>
+                      
+                      <div class="checkbox">
+                          <label>
+                            <input type="checkbox">
+                            上海爱订
+                          </label>
+                        </div>
+                  </li>
+                  <li>
+                      
+                      <div class="checkbox">
+                          <label>
+                            <input type="checkbox">
+                            上海爱订
+                          </label>
+                        </div>
+                  </li>
+                  <li>
+                      
+                      <div class="checkbox">
+                          <label>
+                            <input type="checkbox">
+                            上海爱订
+                          </label>
+                        </div>
+                  </li>
+                  <li>
+                      
+                      <div class="checkbox">
+                          <label>
+                            <input type="checkbox">
+                            上海爱订
+                          </label>
+                        </div>
+                  </li>
+                  <li>
+                      
+                      <div class="checkbox">
+                          <label>
+                            <input type="checkbox">
+                            上海爱订
+                          </label>
+                        </div>
+                  </li>
+                  <li>
+                      
+                      <div class="checkbox">
+                          <label>
+                            <input type="checkbox">
+                            上海爱订
+                          </label>
+                        </div>
+                  </li>
+                  <li>
+                      
+                      <div class="checkbox">
+                          <label>
+                            <input type="checkbox">
+                            上海爱订
+                          </label>
+                        </div>
+                  </li>
+                  <li>
+                      
+                      <div class="checkbox">
+                          <label>
+                            <input type="checkbox">
+                            上海爱订
+                          </label>
+                        </div>
+                  </li>
+                  <li>
+                      
+                      <div class="checkbox">
+                          <label>
+                            <input type="checkbox">
+                            上海爱订
+                          </label>
+                        </div>
+                  </li>
+
+
+
+                </ul>
+
+
+            <div class="saveProductSet">
+              <button type="button" class="btn btn-success">保存</button>
+
+            </div>
+
+
+
+
+
+
+
+          </div>
+
+            <!-- 设置界面 -->
+            <div class="setWrap">
+
+              <div class="cosTop clearfix">
+                <div class="topName">
+                    产品设置
+                </div>
+                <div class="cosClose closeBtns">
+                  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </div>
+              </div>
+
+              <ul class="settingTab">
+                <li>
+
+                  销售策略
+
+                </li>
+                <li>
+                  积分设置
+
+                </li>
+              </ul>
+              <ul class="settingContent">
+                <li>
+
+
+
+                </li>
+                <li>
+
+
+
+
+
+                </li>
+              </ul>
+
+
+
+
+
+
+
+
+              </div>
+
+
+          <!-- 同步界面 -->
+          <div class="synWrap">
+              
+          </div>
+
+        </div>
+     </section>
+     <script src="http://userjs.iidingyun.com/data/2452/js/productManage.js"></script>
+     <script>
+     
+
+
+        
+        var productList = new Vue({
+            el: '#contentMain',
+            data: {
+                allProductArr: [],
+                addProductArr:[],
+                bigTypeArr:[],
+                bigTypeIdArr:[],
+                typeArr:[],
+                uploadImg:'',
+                typeIdArr:[]
+            }
+        });
+
+
+
+
+        $.ajax({
+            type: "GET",
+            url: "http://192.168.0.113:8088/api/product/site_product_list_select.vm",
+            data: {
+                product_code: '',
+                product_name: '',
+                product_type: '',
+                begin_price: '',
+                end_price: '',
+                thisPage: '',
+                pageCount: ''
+            },
+            success: function(data) {
+                var data = JSON.parse(data);         
+                if (data.code == 'success') {
+                    productList.allProductArr = data.data;
+                }
+
+            }
+        });
+        
+        
+    
+      
+
+      function addProductFn(product_code, product_name, alpha, photo, price, member_price, full_product_name, product_desc, product_unit, product_big_type, product_type,
+        cook_time, discount_way) {
+
+        var data = {
+            product_code: product_code,
+            product_name: product_name,
+            alpha: alpha,
+            photo: photo,
+            price: price,
+            member_price: member_price,
+            full_product_name: full_product_name,
+            product_desc: product_desc,
+            product_unit: product_unit,
+            product_big_type: product_big_type,
+            product_type: product_type,
+            cook_time: cook_time,
+            discount_way: discount_way
+        };
+
+        console.log(data)
+        $.ajax({
+            type: "post",
+            dataType: 'json',
+            url: "http://192.168.0.113:8088/api/product/site_product_insert.vm",
+            data: data,
+            success: function(data) {
+                console.log(data);
+
+             
+
+                if (data.code == 'success') {
+
+                    alert(data.msg);
+                };
+
+
+                if (data.code == 'fail') {
+
+                    alert(data.msg)
+                };
+
+                if (data.code == 'product_code_null') {
+
+                    alert(data.msg)
+                };
+
+
+                if (data.code == 'product_name_null') {
+
+                    alert(data.msg)
+                };
+
+
+                if (data.code == 'product_big_type_null') {
+
+                    alert(data.msg)
+                };
+
+
+                if (data.code == 'product_type_null') {
+
+                    alert(data.msg)
+                };
+
+                if (data.code == 'product_code_exist') {
+
+                    alert(data.msg)
+                };
+
+                if (data.code == 'product_name_exist') {
+
+                    alert(data.msg)
+                };
+
+            }
+        })
+    };
+    
+    //厨房分类
+   $.ajax({
+        type: "GET",
+        url: "http://192.168.0.113:8088/api/product/site_product_bigtype_list_select.vm",
+        data: {
+            type_code: '',
+            type_name: '',
+        },
+        success: function(data) {
+   
+        	console.log(data)
+            var data = JSON.parse(data);
+            	console.log(data)
+            if (data.code == 'success') {
+                productList.bigTypeArr = data.data;
+              
+                var dataLength=data.data.length;
+              for(var i=0;i<dataLength;i++){
+              
+                productList.bigTypeIdArr.push(data.data[i].id)
+                
+              }
+            }
+
+        }
+    });
+   
+   
+   //收银分类
+  $.ajax({
+        type: "GET",
+        url: "http://192.168.0.113:8088/api/product/site_product_type_list_select.vm",
+        data: {
+            type_name: ''
+        },
+        success: function(data) {
+
+            console.log(data)
+            var data = JSON.parse(data);
+            productList.typeArr = data.data;
+            
+            
+              var dataCashLength=data.data.length;
+              for(var n=0;n<dataCashLength;n++){
+              
+                productList.typeIdArr.push(data.data[n].id)
+                
+              }
+        }
+
+    
+    });
+   
+   
+   productList.$nextTick(function(){
+   
+   
+   // $(function(){
+   
+   $('#addSure').click(function(){
+   
+   
+   
+   
+  
+   
+   
+  var product_name = $('#addName').val();
+var full_product_name = $('#addName').val();
+
+console.log(product_name)
+var product_code = $('#addNo').val();
+console.log(product_code)
+
+var addBigTypeIndex = $('#addBigType')[0].selectedIndex;
+
+var product_big_type = productList.bigTypeIdArr[addBigTypeIndex];
+console.log(product_big_type);
+
+var addTypeIndex = $('#addType')[0].selectedIndex;
+
+var product_type = productList.typeIdArr[addTypeIndex];
+console.log(product_type);
+
+var product_unit = $('#addUnit')[0].selectedIndex + 1;
+console.log(product_unit)
+
+var alpha = $('#addKeyWord').val();
+console.log(alpha)
+
+var cook_time = $('#addKeyTime').val();
+console.log(cook_time)
+
+var price = $('#addPrice').val();
+console.log(price)
+
+var member_price = $('#addMemberPrice').val();
+console.log(member_price)
+
+var discount_way = $('#addDiscount')[0].selectedIndex;
+console.log(discount_way)
+
+var product_desc = $('#addDesc').val();
+console.log(product_desc)
+
+var photo = productList.uploadImg;
+console.log(photo);
+
+
+
+addProductFn(product_code, product_name, alpha, photo, price, member_price, full_product_name, product_desc, product_unit, product_big_type, product_type,
+     cook_time, discount_way)
+   })
+  // })
+
+
+$(function(){
+
+$('#file_door_img').change(function(){
+
+  chooseImg(this);
+  
+})
+
+
+  function chooseImg(obj){
+    var id=$(obj).attr("data-id");
+    //创建读取文件的对象  
+    //为文件读取成功设置事件  
+  for(var i=0;i<obj.files.length;i++){
+      var file =obj.files[i]; 
+      var reader = new FileReader(); 
+      reader.name=file.name;
+      reader.onload=function(e) {  
+      //创建文件读取相关的变量  
+        uploadImg(e.target.result,e.target.name);
+      };  
+        //正式读取文件  
+        reader.readAsDataURL(file);  
+      }
+}
+  /**
+  上传图片
+  rst  64位
+  返回图片路径
+  **/
+function uploadImg(rst,name)
+{
+    $.ajax({
+      url: "/uploadImg.vm",
+      type: 'post',
+      data:{fileData:rst,fileName:name},  
+      dataType: 'JSON',
+      timeout: 200000,
+      error:function(){  
+          alert("图片上传失败");
+      },  
+      success:function(result){
+        var html= $("#img_upload").html();
+        $("#img_upload").html(html+"<img style='width:100px;' src="+result.code+">");
+       productList.uploadImg=result.code
+      }  
+    });
+}
+})
+  
+   })
+   
+  
+     
+  
+
+
+
+
+</script>
+     
+     

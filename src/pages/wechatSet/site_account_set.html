@@ -1,0 +1,66 @@
+<div id="accountSetBox">
+	<div class="accountSet">
+		<div class="accountList accountType">
+			选择公共账号类别：
+			<input type="radio" v-model="accountType" value="serviceAccount">服务号
+			<input type="radio" v-model="accountType" value="subcribeAccount"> 订阅号
+		</div>
+		<div class="accountList">
+			公众号原始id：
+			<input type="text" class="form-control form-controlInline">
+		</div>
+		<div class="accountList">
+			AppId：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="text" class="form-control form-controlInline">
+		</div>
+		<div class="accountList">
+			AppSecret：&nbsp;&nbsp;&nbsp;
+			<input type="text" class="form-control form-controlInline">
+		</div>
+		<div class="accountList">
+			tokenUrl：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="text" class="form-control form-controlInline">
+		</div>
+	</div>
+
+	<div class="tc">
+		<span>
+			<button type="button" class="btn btn-success">
+				保存设置
+			</button>
+			<button type="button" class="btn btn-success">
+				删除设置
+			</button>
+		</span>
+
+	</div>
+</div>
+<style>
+	.accountSet {
+		padding-left: 20px;
+	}
+
+	.accountType input {
+		margin-left: 20px;
+	}
+
+	.accountSet .form-controlInline {
+		display: inline-block;
+		width: 30%;
+		margin-left: 20px;
+	}
+
+	.accountSet .accountList {
+		margin-bottom: 20px;
+	}
+
+</style>
+
+<script>
+	new Vue({
+		el: '#accountSetBox',
+		data: {
+			accountType: '',
+		}
+	})
+</script>

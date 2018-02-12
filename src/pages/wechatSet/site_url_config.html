@@ -1,0 +1,101 @@
+<div id="urlConfigBox">
+    <div class="urlConfig">
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>名称</th>
+                            <th>url</th>
+                            <th>操作</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item,index) in urlList">
+                            <td>
+                                {{item.id}}
+                            </td>
+                            <td>
+                                {{item.name}}
+                            </td>
+                            <td>
+                                <select class="form-control selectUrl" v-model="item.content_type">
+                                    <option value="">选择文章</option>
+                                    <option value="ceshi">测试</option>
+
+                                </select>
+
+                                <input type="text"  class="form-control urlContent" />
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-success" @click="deleteItem(index)">
+                                    删除
+                                </button>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tc btns">
+
+            <button type="button" class="btn btn-success addBtn">
+                新增
+            </button>
+
+
+            <button type="button" class="btn btn-success" >
+                保存设置
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .urlConfig .btns {
+        position: relative;
+
+    }
+
+    .btns .addBtn {
+        position: absolute;
+        left: 0;
+    }
+    .selectUrl{
+        width:20%;
+        display: inline-block;
+    }
+    .urlContent{
+        width:50%;
+        display: inline-block;
+    }
+</style>
+
+<script>
+    new Vue({
+        el: "#urlConfigBox",
+        data: {
+            urlList: [
+                {
+                    id: 1,
+                    name: 'xiaoma',
+                    content_type: '',
+                    url: 'www.google.com',
+
+                }
+            ]
+        },
+        methods:{
+            deleteItem(index){
+                console.log(index,'index')
+            }
+        }
+    })
+
+
+</script>

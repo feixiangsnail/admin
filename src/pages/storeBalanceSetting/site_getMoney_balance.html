@@ -1,0 +1,445 @@
+<div id="getMoneyBalanceBox">
+		<div class="getMoneyBalance">
+			<div class="balanceTop">
+				<span>
+					门店：
+				</span>
+				<select class="form-control summarizeInput" v-model="searchItem.shopid">
+					<option value="">请选择</option>
+					<option v-for="shop in shopList" :value="shop.shopid">{{shop.shopName}}</option>
+				</select>
+				<span>开始时间:</span>
+				<input type="text" onclick="laydate()" class="form-control timeInput" id="getMoneyBT">
+				<span>结束时间:</span>
+				<input type="text" onclick="laydate()" class="form-control timeInput" id="getMoneyET">
+				<button type="button" class="btn btn-success" @click="search">
+					查询
+				</button>
+				<button type="button" class="btn btn-success" @click="generateReport">
+					生成报表
+				</button>
+			</div>
+			<div class="pages">
+				<page-peak @navpage="showGetMoneyList" :posturl=" '/api/shop/shop_finance_daily_report_select.vm' " :postdata="searchItem"
+				 ref="getMoneyDom"></page-peak>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>门店</th>
+								<th>营业额</th>
+								<th>美团</th>
+								<th>百度</th>
+								<th>饿了么</th>
+								<th>第三方</th>
+								<th>微信支付</th>
+								<th>支付宝</th>
+								<th>POS机</th>
+								<th>现收</th>
+								<th>实际存现</th>
+								<th>长款</th>
+								<th>报销金额</th>
+								<th>累计余额</th>
+								<th>水费</th>
+								<th>电费</th>
+								<th>其他费用</th>
+								<th>其他费用备注</th>
+								<th>操作人</th>
+								<th>日期</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="item in getMoneyData">
+								<td>{{item.shop_name}}</td>
+								<td>{{item.turnover}}</td>
+								<td>{{item.meituan}}</td>
+								<td>{{item.baidu}}</td>
+								<td>{{item.eleme}}</td>
+								<td>{{item.third}}</td>
+								<td>{{item.wx}}</td>
+								<td>{{item.alipay}}</td>
+								<td>{{item.pos}}</td>
+								<td>{{item.pay_by_cash}}</td>
+								<td>{{item.submit_cash}}</td>
+								<td>{{item.long_payment}}</td>
+								<td>{{item.reimburse}}</td>
+								<td>{{item.total_keep}}</td>
+								<td>{{item.water_cost}}</td>
+								<td>{{item.power_cost}}</td>
+								<td>{{item.receivable_other}}</td>
+								<td>{{item.receivable_other_remark}}</td>
+								<td>{{item.operator}}</td>
+								<td>{{item.create_date}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="getMoneyDg" v-if="showGetMoneyDg">
+			<div class="cosTop clearfix">
+				<div class="topName">
+					入账设置
+				</div>
+				<div class="cosClose closeBtns">
+					<span class="glyphicon glyphicon-remove" aria-hidden="true" @click="closeGetMoneyDg()"></span>
+				</div>
+			</div>
+			<ul class="dateList clearfix">
+				<li v-for="(item,index) in dateLists" :class="{chooseDate:dateIndex==index}" @click="toThisTab(index)">
+					{{item}}
+				</li>
+			</ul>
+			<div class="row">
+				<div class="col-xs-12 table-responsive">
+					<table class="table table-striped">
+						<tbody>
+							<tr>
+								<td>营业额</td>
+								<td>
+									{{setMoneyLists.turnover}}
+								</td>
+								<td>余额支付</td>
+								<td>
+									{{setMoneyLists.pay_by_score}}
+								</td>
+								<td>微信支付</td>
+								<td>
+									{{setMoneyLists.wx}}
+								</td>
+							</tr>
+							<tr>
+								
+								<td>支付宝</td>
+								<td>
+									{{setMoneyLists.alipay}}
+								</td>
+								<td>美团</td>
+								<td>
+									{{setMoneyLists.meituan}}
+								</td>
+								<td>百度</td>
+								<td>
+									{{setMoneyLists.baidu}}
+								</td>
+							</tr>
+							<tr>
+								
+								<td>饿了么</td>
+								<td>
+									{{setMoneyLists.eleme}}
+								</td>
+								<td>其他</td>
+								<td>
+									{{setMoneyLists.coupon}}
+								</td>
+								<td>刷卡支付</td>
+								<td>
+									{{setMoneyLists.pos}}
+								</td>
+							</tr>
+							<tr>
+								
+								<td>充值</td>
+								<td>
+									{{setMoneyLists.cash_charge}}
+								</td>
+								<td>当日收现</td>
+								<td>
+									<input v-if="isToday" type="text" class="form-control" v-model="setMoneyLists.pay_by_cash">
+									<span v-else>
+											{{setMoneyLists.pay_by_cash}}
+									</span>
+								</td>
+								<td>长款</td>
+								<td>
+									<input v-if="isToday"  type="text" class="form-control" v-model="setMoneyLists.long_payment">
+									<span v-else>
+											{{setMoneyLists.long_payment}}
+									</span>
+								</td>
+							</tr>
+							<tr>
+								
+								<td>实际存现</td>
+								<td>
+									<input v-if="isToday"  type="text" class="form-control" v-model="setMoneyLists.submit_cash">
+									<span v-else>
+											{{setMoneyLists.submit_cash}}
+									</span>
+								</td>
+								<td>报销金额</td>
+								<td>
+									<input v-if="isToday"  type="text" class="form-control" v-model="setMoneyLists.reimburse">
+									<span v-else>
+											{{setMoneyLists.reimburse}}
+									</span>
+								</td>
+								<td>累计余额</td>
+								<td>
+									<input v-if="isToday"  type="text" class="form-control" v-model="setMoneyLists.total_keep">
+									<span v-else>
+											{{setMoneyLists.total_keep}}
+									</span>
+								</td>
+							</tr>
+							<tr>
+							
+								<td>水</td>
+								<td>
+									<input v-if="isToday"  type="text" class="form-control" v-model="setMoneyLists.water_cost">
+									<span v-else>
+											{{setMoneyLists.water_cost}}
+									</span>
+								</td>
+								<td>电</td>
+								<td>
+									<input v-if="isToday"  type="text" class="form-control" v-model="setMoneyLists.power_cost">
+									<span v-else>
+											{{setMoneyLists.power_cost}}
+									</span>
+								</td>
+								
+								
+							</tr>
+						</tbody>
+					</table>
+					<input type="hidden" id="shopName" value="$i.shop.getShop($usr.shopid).shopName">
+				</div>
+			</div>
+			<div class="tc" v-if="isToday">
+				<button type="button" class="btn btn-success" @click="saveGetMoneyInfo()">
+					保存
+				</button>
+			</div>
+		</div>
+	</div>
+	<style>
+		.balanceTop {
+			height: 40px;
+		}
+		.balanceTop span {
+			padding: 10px 30px;
+			line-height: 30px;
+		}
+		.balanceTop button {
+			margin: 0 40px;
+		}
+		.summarizeInput {
+			display: inline-block;
+			width: 10%;
+			padding-top: 4px;
+		}
+		.getMoneyDg {
+			width: 1100px;
+			height: 600px;
+			background: white;
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			margin: auto;
+			z-index: 1000;
+		}
+		.dateList {
+			padding: 0 10px;
+			margin-bottom: 30px;
+		}
+		.dateList li {
+			display: inline-block;
+			width: 80px;
+			height: 40px;
+			line-height: 40px;
+			text-align: center;
+			margin: 1px 5px;
+			border: 1px solid #333333;
+			border-radius: 5px;
+			background: #aaaaaa;
+		}
+		.dateList li:hover {
+			cursor: pointer;
+			color: blue;
+			text-decoration: underline;
+		}
+		.dateList .chooseDate {
+			background: white;
+			border-bottom: none;
+			color: blue;
+		}
+		.timeInput {
+			display: inline-block;
+			width: 10%;
+		}
+	</style>
+	
+	<script>
+	$(function () {
+		new Vue({
+			el: '#getMoneyBalanceBox',
+			data: {
+				
+				isSummarize: 0,
+				showGetMoneyDg: false,
+				dateLists: [],
+				newDate: new Date(),
+				dateIndex: 0,
+				sleepLists: {},
+				shopList: [], //门店列表
+				getMoneyData: [],//列表数据库
+				searchItem: {
+					shopid: '',
+					begin_date: "",
+					end_date: "",
+					thisPage: "1",
+					pageCount: ""
+				},
+				dateLists1: [],//带年的日期列表，用于传输字段
+				dateShopData: {
+					currDate: '',
+					shopid: '',
+				},
+				setMoneyLists: {},
+				// 弹框内要提交的输入框数据
+				postSaveData:{
+					shiftid:"",
+	
+				}
+			},
+			computed:{
+				isToday(){
+					return this.dateIndex==0;
+				}
+			},
+			mounted() {
+		  
+				this.getDataLists();
+				this.getShopList();
+				
+			},
+			methods: {
+				//获取门店列表
+				getShopList(){
+					var that = this;
+					$.ajax({
+						type: "POST",
+						url: '/api/site/site_shop.vm',
+						data: null,
+						dataType: "json",
+						success: function (data) {
+							that.shopList = data;
+						},
+						error: function (XMLHttpRequest, textStatus, errorThrown) {
+							console.log(XMLHttpRequest.status, 'error')
+						}
+					});
+				},
+				//分页列表数据
+				showGetMoneyList(d) {
+			   
+					this.getMoneyData = d.data || [];
+				},
+				showData: function (d) {
+					this.dataArr = d.data;
+					
+				},
+				getSetMoneyList(){
+					this.dateShopData.currDate = this.dateLists1[this.dateIndex];
+					this.dateShopData.shopid=$usr.shopid;
+					//this.dateShopData.shopid = 65428;
+					
+					var that = this;
+					$.ajax({
+						type: "POST",
+						url: '/api/shop/shift_report_list_now.vm',
+						data: this.dateShopData,
+						dataType: "json",
+						success: function (d) {
+							if (d.code == 'success') {
+								console.log(d.data[0] ,'d.data[0] ')
+								that.setMoneyLists = d.data[0] || {};
+							}
+							else {
+					   that.setMoneyLists = {};
+								gAlert(d.msg)
+							}
+						},
+						error: function (XMLHttpRequest, textStatus, errorThrown) {
+							gAlert(XMLHttpRequest.status)
+						}
+					});
+				},
+				generateReport() {
+					this.showGetMoneyDg = true;
+					$('#masking').show();
+					this.getSetMoneyList();
+				},
+				//查询分页列表
+				search() {
+					searchItem.begin_date = $('#getMoneyBT').val();
+					searchItem.end_date = $('#getMoneyET').val();
+					this.$refs.getMoneyDom.getAjaxData();
+				},
+				closeGetMoneyDg() {
+					this.showGetMoneyDg = false;
+					$('#masking').hide();
+				},
+				//切换日期
+				toThisTab(i) {
+				
+					this.dateIndex = i;
+					this.getSetMoneyList();
+				},
+				// 弹框内保存入账信息
+				saveGetMoneyInfo() {
+						this.setMoneyLists.operator=$usr.userid
+						this.setMoneyLists.shopid=$usr.shopid;
+						this.setMoneyLists.shop_name=$("#shopName").val();
+				  console.log(this.setMoneyLists,'this.setMoneyLists')
+						// this.setMoneyLists.operator='xiaowu';					
+						// this.setMoneyLists.shopid = 65428;				
+						// this.setMoneyLists.shop_name='新餐饮';
+						// console.log(this.setMoneyLists,'this.setMoneyLists')
+						$.ajax({
+							type: "POST",
+							url: '/api/shop/shop_finance_daily_report_setting.vm',
+							data: this.setMoneyLists,
+							dataType: "json",
+							success: function (d) {
+								gAlert(d.msg);
+							},
+							error: function (XMLHttpRequest, textStatus, errorThrown) {
+								gAlert(XMLHttpRequest.status)
+							}
+						});
+	
+	
+					
+				},
+				//生成30天日期列表，
+				getDataLists() {
+					this.dateLists.push('今天 ' + this.getDateStr(0));
+					this.dateLists.push('昨天 ' + this.getDateStr(-1));
+					this.dateLists.push('前天 ' + this.getDateStr(-1));
+					for (var i = 0; i < 27; i++) {
+						this.dateLists.push(this.getDateStr(-1));
+					}
+				},
+				getDateStr(AddDayCount) {
+					var dd = this.newDate;
+					dd.setDate(dd.getDate() + AddDayCount);
+					var y = dd.getFullYear();
+					var m = dd.getMonth() + 1;
+					var d = dd.getDate();
+					// return y + "-" + m + "-" + d;
+					this.dateLists1.push(y + "-" + m + "-" + d)
+					return m + "-" + d;
+				}
+			},
+		})
+	})
+	
+	
+	</script>

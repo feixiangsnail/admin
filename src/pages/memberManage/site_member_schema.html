@@ -1,0 +1,289 @@
+<style>
+.box .text-danger {
+    text-align: center;
+    display: block;
+}
+
+.memberSchema {
+    padding: 20px;
+}
+
+.memberSchema .table-bordered {
+    border: 2px solid white !important;
+    /* 整体表格边框 */
+}
+
+.memberSchema .table-bordered>thead>tr>th,
+.memberSchema .table-bordered>tbody>tr>th,
+.memberSchema .table-bordered>tfoot>tr>th,
+.memberSchema .table-bordered>thead>tr>td,
+.memberSchema .table-bordered>tbody>tr>td,
+.memberSchema .table-bordered>tfoot>tr>td {
+    border: 1px solid #dddddd;
+    /* 单元格边框 */
+}
+
+.memberSchema .table-bordered>thead>tr>th,
+.memberSchema .table-bordered>thead>tr>td {
+    border-bottom-width: 2px;
+    /* 表头底部边框 */
+}
+
+.tags {
+    height: 30px;
+    position: absolute;
+    line-height: 30px;
+    color:white;
+    font-weight: 600;
+    font-size: 18px;
+}
+</style>
+<div id="memberSchemaBox">
+    <div class="memberSchema">
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" @click="tests">会员等级</th>
+                            <th rowspan="2">会员数</th>
+                            <th rowspan="2">所占比率</th>
+                            <th colspan="3">来源比率</th>
+                            <th colspan="3">今日新增</th>
+                            <th rowspan="2">充值</th>
+                            <th rowspan="2">消费</th>
+                            <th rowspan="2">余额</th>
+                            <th rowspan="2">积分余额</th>
+                            <th rowspan="2">
+                                <p>客单价</p>
+                                （平均每单消费金额）
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>微信</th>
+                            <th>支付宝</th>
+                            <th>实体卡</th>
+                            <th>微信</th>
+                            <th>支付宝</th>
+                            <th>实体卡</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in memberSchemaLists">
+                            <td>{{item.buyer_level}}</td>
+                            <td>{{item.buyerCount}} </td>
+                            <td>{{item.buyer_proportion}}</td>
+                            <td>{{item.wx_proportion}}</td>
+                            <td>{{item.alipay_proportion}}</td>
+                            <td>{{item.card_proportion}}</td>
+                            <td>{{item.today_wxCount}}</td>
+                            <td>{{item.today_alipayCount}}</td>
+                            <td>{{item.today_barcodeCount}}</td>
+                            <td>{{item.depositScore}}</td>
+                            <td>{{item.costScore}}</td>
+                            <td>{{item.balance}}</td>
+                            <td>{{item.points}}</td>
+                            <td>{{item.orderPrice}}</td>
+                        </tr>
+                        <tr>
+                            <td>总计</td>
+                            <td>{{totals.total_buyer}}</td>
+                            <td>{{totals.total_proportion}}</td>
+                            <td>{{totals.total_wx}}</td>
+                            <td>{{totals.total_alipay}}</td>
+                            <td>{{totals.total_card}}</td>
+                            <td>{{totals.total_today_wx}}</td>
+                            <td>{{totals.total_today_alipay}}</td>
+                            <td>{{totals.total_today_card}}</td>
+                            <td>{{totals.total_depositScore}}</td>
+                            <td>{{totals.total_costScore}}</td>
+                            <td>{{totals.total_balance}}</td>
+                            <td>{{totals.total_points}}</td>
+                            <td>{{totals.total_orderPrice}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="box box-solid">
+            <div class="box-header">
+                <h3 class="box-title text-danger">会员等级占比图(%)</h3>
+            </div>
+            <div class="box-body">
+                <canvas id="memberLevelRate" style="height: 312px; width: 624px;" width="624" height="312"></canvas>
+            </div>
+            <p v-for="(levItem,index) in levelProportion" v-if=" levItem.value" class="tags" :style=" 'top:'+index*32+'px;' +'background:'+levItem.color">{{levItem.label}}</p>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="box box-solid">
+            <div class="box-header">
+                <h3 class="box-title text-danger">来源占比图(%)</h3>
+            </div>
+            <div class="box-body">
+                <canvas id="sourceRate" style="height: 312px; width: 624px;" width="624" height="312"></canvas>
+            </div>
+            <p v-for="(typeItem,index) in typeProportion" v-if=" typeItem.value" class="tags" :style=" 'top:'+index*32+'px;' +'background:'+typeItem.color">{{typeItem.label}}</p>
+        </div>
+    </div>
+</div>
+<script src="./bower_components/Chart.js/Chart.js"></script>
+<script>
+$(function() {
+    var vSchema = new Vue({
+        el: '#memberSchemaBox',
+        data: {
+            memberSchemaLists: [],
+            totals: {},
+            translateLev: {
+                levelEight: '八级会员',
+                levelFive: '五级会员',
+                levelFour: '四级会员',
+                levelNine: '九级会员',
+                levelOne: '一级会员',
+                levelSeven: '七级会员',
+                levelSix: '六级会员',
+                levelTen: '十级会员',
+                levelThree: '三级会员',
+                levelTwo: '二级会员',
+                levelZero: '普通会员',
+            },
+            translateType: {
+                wxProportion: '微信',
+                alipayProportion: '支付宝',
+                cardProportion: '实体卡'
+                
+            },
+            levelProportion: [{
+                    value: 0,
+                    color: '#f56954',
+                    label: ''
+                },
+                {
+                    value: 0,
+                    color: '#00a65a',
+                    label: ''
+                },
+                {
+                    value: 0,
+                    color: '#f39c12',
+                    label: ''
+                },
+                {
+                    value: 0,
+                    color: '#00c0ef',
+                    label: ''
+                },
+                {
+                    value: 0,
+                    color: '#3c8dbc',
+                    label: ''
+                },
+                {
+                    value: 0,
+                    color: '#d2d6de',
+                    label: ''
+                },
+                {
+                    value: 0,
+                    color: '#00a65a',
+                    label: ''
+                },
+                {
+                    value: 0,
+                    color: '#f39c12',
+                    label: ''
+                },
+                {
+                    value: 0,
+                    color: '#00c0ef',
+                    label: ''
+                },
+                {
+                    value: 0,
+                    color: '#3c8dbc',
+                    label: ''
+                },
+                {
+                    value: 0,
+                    color: '#d2d6de',
+                    label: ''
+                }
+            ],
+            typeProportion: [{
+                    value: 0,
+                    color: '#ff0000',
+                    label: ''
+                },
+                {
+                    value: 0,
+                    color: '#00ff00',
+                    label: ''
+                },
+                {
+                    value: 0,
+                    color: '#0000ff',
+                    label: ''
+                }
+            ]
+        },
+        mounted: function() {
+            this.getMemberSchema();
+        },
+        methods: {
+            getMemberSchema: function() {
+                var that = this;
+                $.ajax({
+                    type: "GET",
+                    url: "/api/member/site_buyer_schema.vm",
+                    data: null,
+                    dataType: "json",
+                    success: function(d) {
+                        that.memberSchemaLists = d.data;
+                        that.totals = d.totals;
+                        console.log(d, 'ddddddddddddd')
+                        var levIndex = 0,
+                            typeIndex = 0;
+                        for (var i in d.levelProportion) {
+                            that.levelProportion[levIndex].label = that.translateLev[i];
+                            that.levelProportion[levIndex].value = d.levelProportion[i];
+                            levIndex++;
+                        }
+                        for (var j in d.typeProportion) {
+                            that.typeProportion[typeIndex].label = that.translateType[j];
+                            that.typeProportion[typeIndex].value = d.typeProportion[j];
+                            typeIndex++;
+                        }
+                        that.tests();
+                    }
+                });
+            },
+            tests: function() {
+                showPies();
+            }
+        }
+    })
+    var pieOptions = {
+        segmentShowStroke: true,
+        segmentStrokeColor: '#fff',
+        segmentStrokeWidth: 2,
+        animationSteps: 100,
+        animationEasing: 'easeOutBounce',
+        animateRotate: true,
+        animateScale: false,
+        responsive: true,
+        maintainAspectRatio: true,
+    }
+    var pieChartCanvas = $('#memberLevelRate').get(0).getContext('2d')
+    var memberChart = new Chart(pieChartCanvas)
+    var pieChartCanvas = $('#sourceRate').get(0).getContext('2d')
+    var sourceChart = new Chart(pieChartCanvas)
+
+    function showPies() {
+        memberChart.Doughnut(vSchema.levelProportion, pieOptions)
+        sourceChart.Doughnut(vSchema.typeProportion, pieOptions)
+    }
+})
+</script>

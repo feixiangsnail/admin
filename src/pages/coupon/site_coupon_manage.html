@@ -1,0 +1,622 @@
+<style>
+    .couponDialog {
+        width: 1100px;
+        height: 600px;
+        background: white;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        z-index: 1000;
+    }
+
+    .chooseStores {
+        width: 1000px;
+        margin: auto;
+        height: 170px;
+    }
+
+    .availableText {
+        height: 50px;
+        width: 400px;
+        margin: auto;
+    }
+
+    .availableText p {
+        float: left;
+        line-height: 30px;
+    }
+
+    .availableText .selectAllStore {
+        float: right;
+    }
+
+    .availableStore {
+        height: 100px;
+        width: 1000px;
+    }
+
+    .availableStore>li {
+        float: left;
+        padding: 0 13px;
+    }
+
+    .middleBtn {
+        text-align: center;
+    }
+
+    .addNewConpon {
+        margin-bottom: 10px;
+    }
+
+    .codeImg>img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .codeImg:hover img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .codeImg:hover {
+        cursor: pointer;
+    }
+
+    .dataCountText {
+        text-align: center;
+        color: blue;
+    }
+</style>
+<div id="couponManageBox">
+    <div class="couponManage">
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>开始日期</th>
+                            <th>结束日期</th>
+                            <th>类型</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="text" class="form-control" v-model="searchItem.ticket_name">
+                            </td>
+                            <td>
+                                <input type="text" onclick="laydate()" class="form-control time-input" id="couponSearchBT">
+                            </td>
+                            <td>
+                                <input type="text" onclick="laydate()" class="form-control time-input" id="couponSearchET">
+                            </td>
+                            <td>
+                                <select class="form-control" v-model="searchItem.ticket_type">
+                                    <option value="">请选择</option>
+                                    <option value="cash">现金券</option>
+                                    <option value="discount">折扣券</option>
+                                    <option value="product">产品券</option>
+                                </select>
+                            </td>
+                            <td class="col-md-2">
+                                <button type="button" class="btn btn-success" @click="searchCoupon">
+                                    查询
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="addNewConpon">
+            <button type="button" class="btn btn-success" @click="openCouponDialog()">
+                新增券
+            </button>
+        </div>
+        <div class="pages">
+            <page-peak @navpage="showCouponData" :posturl=" '/api/ticket/site_ticket_select.vm' " :postdata="searchItem" ref="child1"></page-peak>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>券名称</th>
+                            <th>券编号</th>
+                            <th>券类型</th>
+                            <th>优惠方式</th>
+                            <th>优惠值</th>
+                            <th>最低消费</th>
+                            <th>过期时间</th>
+                            <th>创建时间</th>
+                            <th>发行量</th>
+                            <th>已绑定量</th>
+                            <th>已使用</th>
+                            <th>二维码</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item,index) in cuponLists">
+                            <td>{{item.ticket_name}}</td>
+                            <td>{{item.ticket_code}}</td>
+                            <td>{{item.ticket_type}}</td>
+                            <td>{{item.discount_way}}</td>
+                            <td>{{item.discount_value}}</td>
+                            <td>{{item.use_condition}}</td>
+                            <td>{{item.due_date}}</td>
+                            <td>{{item.create_time}}</td>
+                            <td>{{item.issue_count}}</td>
+                            <td>{{item.occupied}}</td>
+                            <td>{{item.consume_count}}</td>
+                           
+                            <td class="codeImg">
+                                <img src="./assets/images/test.jpg" alt="">
+                                <a href="./assets/images/test.jpg" :download="item.ticket_name+'.png' " style="color:blue">下载</a>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-success" @click="openCouponInfo(index)">
+                                    详情
+                                </button>
+                                <button type="button" class="btn btn-success" @click="deleteCoupon(index)">
+                                    删除
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- 新增券弹框 -->
+    <div v-if="showCouponDialog" class="couponDialog">
+        <div class="cosTop clearfix">
+            <div class="topName">
+                新增券
+            </div>
+            <div class="cosClose closeBtns">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true" @click="closeCouponDialog()"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped currentGood">
+                    <tbody>
+                        <tr>
+                            <td>名称：</td>
+                            <td>
+                                <input type="text" class="form-control" v-model="newCoupon.ticket_name">
+                            </td>
+                            <td>产品券名称应与产品名称一致</td>
+                            <td>编号：</td>
+                            <td>
+                                <input type="text" class="form-control" v-model="newCoupon.ticket_code">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>折扣类型：</td>
+                            <td>
+                                <select class="form-control" v-model="newCoupon.discount_way">
+                                    <option value="">请选择</option>
+                                    <option value="0">折扣</option>
+                                    <option value="1">现金</option>
+                                </select>
+                            </td>
+                            <td></td>
+                            <td>发行人：</td>
+                            <td>
+                                <input type="text" class="form-control" v-model="newCoupon.issuer">
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>发行量：</td>
+                            <td>
+                                <input type="text" class="form-control" v-model="newCoupon.issue_count">
+                            </td>
+                            <td></td>
+                            <td>面值：</td>
+                            <td>
+                                <input type="text" class="form-control" v-model="newCoupon.discount_value">
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>最低消费：</td>
+                            <td>
+                                <input type="text" class="form-control" v-model="newCoupon.use_condition">
+                            </td>
+                            <td></td>
+                            <td>过期时间：</td>
+                            <td>
+                                <input type="text" class="form-control" id="couponEndTime" onclick="laydate()">
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>每人最多领取：</td>
+                            <td>
+                                <input type="text" class="form-control" v-model="newCoupon.max_bind_per">
+                            </td>
+                            <td></td>
+                            <td>券类型：</td>
+                            <td>
+                                <select class="form-control" v-model="newCoupon.ticket_type">
+                                    <option value="">请选择</option>
+                                    <option value="cash">现金券</option>
+                                    <option value="discount">折扣券</option>
+                                    <option value="product">产品券</option>
+                                </select>
+                            </td>
+                            <td>须选择自定义的券类型</td>
+                        </tr>
+                        <tr>
+                            <td>自动生成:</td>
+                            <td>
+                                <select class="form-control" v-model="newCoupon.isGenerate">
+                                    <option value="">请选择</option>
+                                    <option value="1">是</option>
+                                    <option value="0">否</option>
+                                </select>
+                            </td>
+                            <td></td>
+
+                            <td>支付方式：</td>
+                            <td>
+
+                                    <select class="form-control" v-model="newCoupon.pay_type">
+                                            <option value="">请选择</option>
+                                            <option v-for="i in payTypeList" :value="i.typeid">{{i.type_name}}</option>
+                                            
+                                        </select>
+                            </td>
+
+
+                            
+                        </tr>
+                        <tr>
+                                <td>备注：</td>
+                                <td colspan="5">
+                                    <input type="text" class="form-control" v-model="newCoupon.remark">
+                                </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="chooseStores clearfix">
+            <div class="availableText clearfix">
+                <p>适用门店: </p>
+                <div class="checkbox selectAllStore">
+                    <label>
+                        <input type="checkbox" :checked="shopLists.length === curShops.length" @click='checkedAll()'> 全选
+                    </label>
+                </div>
+            </div>
+            <ul class="availableStore clearfix">
+                <li v-for="shopItem in curShops">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" :checked="shopLists.indexOf(shopItem.shopid)>=0" @click='checkedOne(shopItem.shopid)'> {{shopItem.shopName}}
+                        </label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="middleBtn">
+            <button type="button" class="btn btn-success" @click="saveCoupon()">
+                保存
+            </button>
+        </div>
+    </div>
+    <!-- 券详情弹框 -->
+    <div v-if="showDetailDg" class="couponDialog">
+        <div class="cosTop clearfix">
+            <div class="topName">
+                券详情
+            </div>
+            <div class="cosClose closeBtns">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true" @click="closeCouponInfo()"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped currentGood">
+                    <tbody>
+                        <tr>
+                            <td>券名称：</td>
+                            <td>
+                                {{currentCoupon.ticket_name}}
+                            </td>
+                            <td>产品名称:</td>
+                            <td>
+                                {{currentCoupon.product_name}}
+                            </td>
+                            <td>产品编号:</td>
+                            <td>
+                                {{currentCoupon.productid}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>折扣方式:</td>
+                            <td> {{currentCoupon.discount_way}}</td>
+                            <td>发行量：</td>
+                            <td>
+                                {{currentCoupon.issue_count}}
+                            </td>
+                            <td>优惠值：</td>
+                            <td> {{currentCoupon.discount_value}}</td>
+                        </tr>
+                        <tr>
+                            <td>最低消费：</td>
+                            <td>
+                                {{currentCoupon.use_condition}}
+                            </td>
+                            <td>过期时间：</td>
+                            <td class="col-md-2">
+                                <input type="text" class="form-control" id="couponEndTime2" onclick="laydate()">
+                            </td>
+                            <td>备注：</td>
+                            <td colspan="4">
+                                <input type="text" class="form-control" v-model="currentCoupon.remark">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="chooseStores clearfix">
+            <div class="availableText clearfix">
+                <p>适用门店: </p>
+                <div class="checkbox selectAllStore">
+                    <label>
+                        <input type="checkbox" :checked="shopLists.length === curShops.length" @click='checkedAll()'> 全选
+                    </label>
+                </div>
+            </div>
+            <ul class="availableStore clearfix">
+                <li v-for="shopItem in curShops">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" :checked="shopLists.indexOf(shopItem.shopid)>=0" @click='checkedOne(shopItem.shopid)'> {{shopItem.shopName}}
+                        </label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="tc">
+            <button type="button" class="btn btn-success" @click="saveCurrentCoupon()">
+                保存
+            </button>
+        </div>
+    </div>
+</div>
+<!-- <script src="./pages/coupon/couponManage.js"></script> -->
+
+<script>
+   $(function () {
+    new Vue({
+        el: '#couponManageBox',
+        data: {
+            payTypeList:[],
+            currentCoupon: null,
+            showDetailDg: false,
+            showCouponDialog: false,
+            cuponLists: [],
+            //下面三条是地址选项
+            curShops: [],//所有门店列表
+            isCheckedAll: false,
+            shopLists: [],//选中的门店列表
+            searchItem: {
+                ticket_name: '',
+                begin_time: '',
+                end_time: '',
+                ticket_type: '',
+                pageCount: 6,
+            },
+            newCoupon: {
+                ticket_name: '',
+                ticket_code: '',
+                discount_way: '',
+                issuer: '',
+                issue_count: '',
+                discount_value: '',
+                use_condition: '',
+                due_date: '',
+                max_bind_per: '',
+                ticket_type: '',
+                remark: '',
+                shopid: '',
+                isGenerate: '',
+            }
+        },
+        mounted() {
+            
+
+           
+
+        },
+        methods: {
+            getPayTypeList(){
+                var that=this;
+                $.ajax({
+                    type: "POST",
+                    url: '/api/site_set/site_pay_type_list_select.vm',
+                    data: null,
+                    dataType: "json",
+                    success: function (d) {
+                        if (d.code == 'success') {
+                            that.payTypeList=d.data || [];
+                           
+                        } else {
+                            that.payTypeList= [];
+                            gAlert(d.msg)
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        gAlert('请求失败，状态码:' + XMLHttpRequest.status)
+                    }
+                });
+            },
+            openCouponDialog: function () {
+                this.showCouponDialog = true;
+                this.getShopIds();
+                this.getPayTypeList();
+            },
+            closeCouponDialog: function () {
+                this.showCouponDialog = false;
+                $('#masking').hide();
+            },
+            // 保存新增优惠券
+            saveCoupon: function () {
+                this.newCoupon.due_date = $('#couponEndTime').val();
+                this.newCoupon.shopid = this.shopLists.join(',') + ",";
+
+                var that = this;
+                $.ajax({
+                    type: "POST",
+                    url: '/api/ticket/site_ticket_insert.vm',
+                    data: this.newCoupon,
+                    dataType: "json",
+                    success: function (d) {
+                        if (d.code == 'success') {
+                            that.searchCoupon();
+                            gAlert('保存成功。')
+                        } else {
+                            gAlert(d.msg)
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        gAlert('请求失败，状态码:' + XMLHttpRequest.status)
+                    }
+                });
+            },
+            //保存优惠券详情内容
+
+            saveCurrentCoupon() {
+                this.currentCoupon.due_date = $('#couponEndTime2').val();
+                this.currentCoupon.shopid = this.shopLists.join(',') + ",";
+               
+                var that=this;
+                $.ajax({
+                    type: "POST",
+                    url: '/api/ticket/site_ticket_update.vm',
+                    data: this.currentCoupon,
+                    dataType: "json",
+                    success: function (d) {
+                        if (d.code == 'success') {
+                            that.searchCoupon();
+                            gAlert('保存成功。')
+                        } else {
+                            gAlert(d.msg)
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        gAlert('请求失败，状态码:' + XMLHttpRequest.status)
+                    }
+                });
+
+            },
+
+            checkedOne: function (id) {
+                let idIndex = this.shopLists.indexOf(id)
+                if (idIndex >= 0) {
+                    this.shopLists.splice(idIndex, 1)
+                } else {
+                    this.shopLists.push(id)
+                }
+            },
+            checkedAll() {
+                this.isCheckedAll = !this.isCheckedAll
+                if (this.isCheckedAll) {
+                    this.shopLists = []
+                    this.curShops.forEach(function (i) {
+                        this.shopLists.push(i.shopid)
+                    }, this)
+                } else {
+                    this.shopLists = []
+                }
+            },
+            searchCoupon() {
+                this.searchItem.begin_time = $('#couponSearchBT').val();
+                this.searchItem.end_time = $('#couponSearchET').val();
+                this.$refs.child1.getAjaxData();
+            },
+            showCouponData: function (d) {
+              
+                this.cuponLists = d.data || [];
+            },
+            deleteCoupon(index) {
+                var that = this;
+                $.ajax({
+                    type: "POST",
+                    url: "/api/ticket/site_ticket_delete.vm",
+                    data: {
+                        id: this.cuponLists[index].id
+                    },
+                    dataType: "json",
+                    success: function (d) {
+                        if (d.code == 'success') {
+                            that.cuponLists.splice(index, 1);
+                            gAlert('删除成功')
+                        } else {
+                            gAlert(d.msg)
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        gAlert('请求失败，状态码:' + XMLHttpRequest.status)
+                    }
+                });
+            },
+            openCouponInfo(index) {
+                this.showDetailDg = true;
+                this.getShopIds();
+                this.currentCoupon = this.cuponLists[index];
+               
+                var temp = this.currentCoupon.shopid.split(',')
+                temp.pop();
+                this.shopLists = temp;
+            },
+            closeCouponInfo() {
+                this.showDetailDg = false;
+                $('#masking').hide();
+                this.currentCoupon = null;
+            },
+            //打开弹框先获取shopId并将打开蒙版
+            getShopIds() {
+                $('#masking').show();
+                this.curShops = [];
+                this.isCheckedAll = false;
+                this.shopLists = [];
+                var that = this;
+                $.ajax({
+                    type: "POST",
+                    url: '/api/site/site_shop.vm',
+                    data: null,
+                    dataType: "json",
+                    success: function (d) {
+                        that.curShops = d;
+                        if (document.getElementById('couponEndTime2')) {
+                            document.getElementById('couponEndTime2').value = that.currentCoupon.due_date;
+
+                        }
+
+
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        gAlert('请求失败，状态码:' + XMLHttpRequest.status)
+                    }
+                });
+            }
+        }
+    })
+}) 
+
+
+    
+</script>

@@ -1,0 +1,31 @@
+.pagination {
+    position: relative;
+    margin: auto;
+    text-align: center;
+    display: block;
+}
+
+.pagination li {
+    display: inline-block;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.pagination li a {
+    padding: .5rem 1rem;
+    display: inline-block;
+    border: 1px solid #ddd;
+    background: #fff;
+
+    color: #0E90D2;
+}
+
+.pagination li a:hover {
+    background: #eee;
+    cursor: pointer;
+}
+
+.pagination li.active a {
+    background: #0E90D2;
+    color: #fff;
+}

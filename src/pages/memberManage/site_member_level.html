@@ -1,0 +1,146 @@
+
+<div id="memberLevelBox">
+    <div class="memberLevel">
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>星级</th>
+                            <th>等级名称</th>
+                            <th>等级金额</th>
+                            <th>描述</th>
+                            <th>删除</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item,index) in paySetData">
+                            <td>
+                                <select class="form-control" v-model="item.buyer_level">
+                                    <option v-for="i in 11" :value="i-1">{{i-1}}星级用户</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" v-model="item.level_name">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" v-model="item.criteria">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" v-model="item.remark">
+                            </td>
+                            <td>
+                                <button v-if="index!=paySetData.length-1" type="button" class="btn btn-success" v-on:click='deleteList(index)'>
+                                    删除
+                                </button>
+                                <button v-else type="button" class="btn btn-success" v-on:click='addList(index)'>
+                                    新增
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="saveMemberLevel">
+        <button type="button" class="btn btn-success" @click="saveLists()">保存</button>
+    </div>
+</div>
+<style>
+.memberLevel .table-striped>thead>tr {
+    background: #d6d6d6;
+}
+.memberLevel th {
+    text-align: center;
+}
+.memberLevel td {
+    text-align: center;
+}
+.saveMemberLevel {
+    text-align: center;
+}
+.modal-dialog {
+    width: 100px;
+    margin: 200px auto;
+}
+.modal-header {
+    display: none;
+}
+.bootstrap-dialog-message {
+    text-align: center;
+}
+</style>
+<script>
+$(function() {
+    new Vue({
+        el: '#memberLevelBox',
+        data: {
+            search: '',
+            paySetData: [
+            ],
+        },
+        mounted: function() {
+            var that = this;
+            $.ajax({
+                type: "GET",
+                url: "/api/site_member_level_select.vm",
+                data: null,
+                dataType: "json",
+                success: function(d) {
+                    that.paySetData = d.data || [];
+                    that.paySetData.push({ "id": "", "level_name": "", "buyer_level": "", "criteria": "", "remark": "" })
+                    
+                }
+            });
+        },
+        methods: {
+            deleteList: function(index) {
+                var that = this;
+                $.ajax({
+                    type: "POST",
+                    data: { id: this.paySetData[index]['id'] },
+                    url: "/api/member/site_buyer_level_delete.vm",
+                    dataType: "json",
+                    success: function(d) {
+                       
+                        if (d.code == 'success') {
+                            that.paySetData.splice(index, 1);
+                            gAlert('删除成功')
+                        } else {
+                            gAlert(d.msg)
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        gAlert('操作失败，状态码:'+XMLHttpRequest.status)
+                    }
+                });
+            },
+            addList: function() {
+                this.paySetData.push({ "id": "", "level_name": "", "buyer_level": "", "criteria": "", "remark": "" })
+            },
+            saveLists: function() {
+                
+                var d = JSON.stringify(this.paySetData);
+                $.ajax({
+                    type: "POST",
+                    data: { datas: d },                   
+                    url: "/api/member/site_buyer_level_set.vm",
+                    dataType: "json",
+                    success: function(d) {
+                       
+                        if (d.code == 'success') {
+                            gAlert('保存成功')
+                        } else {
+                            gAlert(d.msg)
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        console.log(XMLHttpRequest.status,'error')
+                    }
+                });
+            }
+        }
+    })
+})
+</script>
